@@ -1,4 +1,12 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 import { supabase } from "@/services/supabase";
 import { formatDateLabel, formatTimeLabel } from "@/features/booking/formatters";
 import { mockSessions, type SessionItem } from "@/features/booking/mockData";
@@ -52,53 +60,40 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     };
   }
 
+  const refreshSessions = useCallback(async () => {
+    if (!supabase) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    const { data, error: sessionsError } = await supabase.rpc("get_member_sessions");
+
+    if (sessionsError) {
+      setError(sessionsError.message);
+      setIsLoading(false);
+      return;
+    }
+
+    setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
     async function load() {
       if (!supabase) {
         return;
       }
-
-      setIsLoading(true);
-      setError(null);
-
-      const { data, error: sessionsError } = await supabase.rpc("get_member_sessions");
-
-      if (sessionsError) {
-        setError(sessionsError.message);
-        setIsLoading(false);
-        return;
-      }
-
-      setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
-      setIsLoading(false);
+      await refreshSessions();
     }
 
     void load();
-  }, []);
+  }, [refreshSessions]);
 
   const value = useMemo<BookingContextValue>(() => {
     const getSessionById = (sessionId: string) =>
       sessions.find((session) => session.id === sessionId) ?? null;
-
-    const refreshSessions = async () => {
-      if (!supabase) {
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      const { data, error: sessionsError } = await supabase.rpc("get_member_sessions");
-
-      if (sessionsError) {
-        setError(sessionsError.message);
-        setIsLoading(false);
-        return;
-      }
-
-      setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
-      setIsLoading(false);
-    };
 
     return {
       sessions,
@@ -168,7 +163,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       },
       getSessionById
     };
-  }, [error, isLoading, sessions]);
+  }, [error, isLoading, refreshSessions, sessions]);
 
   return (
     <BookingContext.Provider value={value}>{children}</BookingContext.Provider>

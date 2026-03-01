@@ -62,6 +62,7 @@ as $$
   left join user_bookings ub on ub.session_id = s.id
   left join coach_labels cl on cl.session_id = s.id and cl.rn = 1
   where s.status = 'scheduled'
+    and s.starts_at >= now() - interval '1 hour'
   order by s.starts_at asc;
 $$;
 
@@ -114,6 +115,16 @@ begin
 
   if session_capacity is null then
     raise exception 'Session not available';
+  end if;
+
+  perform 1
+  from public.bookings b
+  where b.session_id = target_session_id
+    and b.user_id = auth.uid()
+    and b.status = 'confirmed';
+
+  if found then
+    raise exception 'Already booked';
   end if;
 
   select count(*)

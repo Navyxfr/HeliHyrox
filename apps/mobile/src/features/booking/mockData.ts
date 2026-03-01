@@ -56,9 +56,3 @@ export const mockSessions: SessionItem[] = [
     isBooked: true
   }
 ];
-
-export const myBookings = mockSessions.filter((session) => session.isBooked);
-
-export function getSessionById(sessionId: string) {
-  return mockSessions.find((session) => session.id === sessionId) ?? null;
-}

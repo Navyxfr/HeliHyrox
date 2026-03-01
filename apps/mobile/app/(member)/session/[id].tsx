@@ -45,6 +45,7 @@ export default function SessionDetailScreen() {
         <Text style={styles.label}>Type</Text>
         <Text style={styles.value}>{session.sessionType}</Text>
         <Pressable
+          disabled={isLoading}
           onPress={() =>
             void (session.isBooked
               ? cancelBooking(session.id)
