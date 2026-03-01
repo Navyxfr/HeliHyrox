@@ -1,7 +1,6 @@
 import { Link, type Href } from "expo-router";
 import { useState } from "react";
-import { Text } from "react-native";
-import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { AppTextInput } from "@/components/ui/AppTextInput";
 import { Button } from "@/components/ui/Button";
@@ -16,21 +15,20 @@ export default function LoginScreen() {
 
   return (
     <Screen scrollable>
-      <PlaceholderPanel
-        body={
-          isSupabaseEnabled
-            ? "Supabase est configuré. Connectez-vous avec votre compte existant."
-            : "Fallback mock actif. Les boutons simulent les statuts pour valider les guards de navigation."
-        }
-        eyebrow="AUTH"
-        title="Connexion"
-      />
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Auth</Text>
+        <Text style={styles.title}>Connexion</Text>
+        <Text style={styles.body}>
+          {isSupabaseEnabled
+            ? "Connectez-vous avec votre compte existant."
+            : "Fallback mock actif. Les boutons ci-dessous simulent les statuts pour valider la navigation."}
+        </Text>
+      </View>
       {isSupabaseEnabled ? (
         <>
           <AppTextInput
             accessibilityLabel="Email"
             autoCapitalize="none"
-            error={null}
             keyboardType="email-address"
             label="Email"
             onChangeText={setEmail}
@@ -54,10 +52,7 @@ export default function LoginScreen() {
               setErrorMessage(result.error);
             }}
           />
-          <Link
-            href={"/(auth)/reset-password" as Href}
-            style={{ color: colors.primary, fontWeight: "600" }}
-          >
+          <Link href={"/(auth)/reset-password" as Href} style={styles.resetLink}>
             Mot de passe oublié ?
           </Link>
         </>
@@ -87,7 +82,33 @@ export default function LoginScreen() {
           />
         </>
       ) : null}
-      {errorMessage ? <Text style={{ color: colors.danger }}>{errorMessage}</Text> : null}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    gap: 8
+  },
+  eyebrow: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase"
+  },
+  title: {
+    color: colors.primary,
+    fontSize: 28,
+    fontWeight: "800"
+  },
+  body: {
+    color: colors.text,
+    fontSize: 15,
+    lineHeight: 22
+  },
+  resetLink: {
+    color: colors.primary,
+    fontWeight: "600"
+  }
+});

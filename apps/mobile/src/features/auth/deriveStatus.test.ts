@@ -58,4 +58,19 @@ describe("deriveStatusFromData", () => {
       })
     ).toBe("public");
   });
+
+  it("retourne public pour une adhesion expiree ou annulee", () => {
+    expect(
+      deriveStatusFromData({
+        membershipStatus: "expired",
+        applicationStatus: null
+      })
+    ).toBe("public");
+    expect(
+      deriveStatusFromData({
+        membershipStatus: "cancelled",
+        applicationStatus: null
+      })
+    ).toBe("public");
+  });
 });

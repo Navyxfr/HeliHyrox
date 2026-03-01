@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Text } from "react-native";
-import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { useToast } from "@/components/Toast";
 import { AppTextInput } from "@/components/ui/AppTextInput";
@@ -16,15 +15,15 @@ export default function ResetPasswordScreen() {
 
   return (
     <Screen scrollable>
-      <PlaceholderPanel
-        body={
-          isSupabaseEnabled
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Auth</Text>
+        <Text style={styles.title}>Réinitialiser le mot de passe</Text>
+        <Text style={styles.body}>
+          {isSupabaseEnabled
             ? "Saisissez votre adresse email pour recevoir un lien de réinitialisation."
-            : "Le reset password n’est disponible qu’avec Supabase configuré."
-        }
-        eyebrow="AUTH"
-        title="Réinitialiser le mot de passe"
-      />
+            : "Le reset password n’est disponible qu’avec Supabase configuré."}
+        </Text>
+      </View>
       <AppTextInput
         accessibilityLabel="Email"
         autoCapitalize="none"
@@ -48,7 +47,29 @@ export default function ResetPasswordScreen() {
           }
         }}
       />
-      {errorMessage ? <Text style={{ color: colors.danger }}>{errorMessage}</Text> : null}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    gap: 8
+  },
+  eyebrow: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase"
+  },
+  title: {
+    color: colors.primary,
+    fontSize: 28,
+    fontWeight: "800"
+  },
+  body: {
+    color: colors.text,
+    fontSize: 15,
+    lineHeight: 22
+  }
+});

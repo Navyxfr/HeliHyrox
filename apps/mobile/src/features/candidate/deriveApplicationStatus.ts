@@ -16,6 +16,10 @@ export function deriveApplicationStatus(input: {
     return "pending_review";
   }
 
+  if (input.currentStatus === "rejected") {
+    return "rejected";
+  }
+
   if (input.currentStatus === "changes_requested") {
     return "changes_requested";
   }

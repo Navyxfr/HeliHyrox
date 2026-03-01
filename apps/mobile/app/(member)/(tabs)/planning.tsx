@@ -19,12 +19,12 @@ export default function PlanningScreen() {
       scrollable
     >
       <Text style={styles.title}>Planning</Text>
-      {isLoading ? <Text style={styles.meta}>Chargement des seances...</Text> : null}
+      {isLoading ? <Text style={styles.meta}>Chargement des séances...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {sessions.map((session) => (
         <SessionCard
           key={session.id}
-          actionLabel={session.isBooked ? "Voir la reservation" : "Voir la seance"}
+          actionLabel={session.isBooked ? "Voir la réservation" : "Voir la séance"}
           href={`/(member)/session/${session.id}`}
           session={session}
         />
