@@ -1,11 +1,14 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { derivedStatusLabels } from "@helihyrox/shared";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useMemberData } from "@/features/member/MemberDataContext";
-import { Screen } from "@/components/Screen";
 import { colors } from "@/theme/tokens";
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { derivedStatus, email, roles, signOut } = useAuth();
   const { membershipSummary } = useMemberData();
 
@@ -15,11 +18,9 @@ export default function ProfileScreen() {
         <Text style={styles.eyebrow}>Profil</Text>
         <Text style={styles.title}>Mon compte</Text>
         <Text style={styles.body}>
-          {email ?? "Aucun email renseigné"} • statut {derivedStatus.replace("_", " ")}
+          {email ?? "Aucun email renseigne"} - statut {derivedStatusLabels[derivedStatus]}
         </Text>
-        <Text style={styles.body}>
-          Rôles : {roles.length ? roles.join(", ") : "member"}
-        </Text>
+        <Text style={styles.body}>Roles : {roles.length ? roles.join(", ") : "member"}</Text>
       </View>
       <View style={styles.summaryCard}>
         <Text style={styles.summaryLabel}>Saison active</Text>
@@ -27,25 +28,23 @@ export default function ProfileScreen() {
         <Text style={styles.summaryMeta}>{membershipSummary.dossierStatusLabel}</Text>
       </View>
       <View style={styles.links}>
-        <Link href="/(member)/membership-status" asChild>
-          <Pressable style={styles.linkButton}>
-            <Text style={styles.linkButtonText}>Voir le statut administratif</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(member)/records" asChild>
-          <Pressable style={styles.linkButton}>
-            <Text style={styles.linkButtonText}>Voir mes records</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(member)/season-renewal" asChild>
-          <Pressable style={styles.linkButton}>
-            <Text style={styles.linkButtonText}>Voir le renouvellement</Text>
-          </Pressable>
-        </Link>
+        <Button
+          label="Voir le statut administratif"
+          onPress={() => router.push("/(member)/membership-status")}
+          variant="secondary"
+        />
+        <Button
+          label="Voir mes records"
+          onPress={() => router.push("/(member)/records")}
+          variant="secondary"
+        />
+        <Button
+          label="Voir le renouvellement"
+          onPress={() => router.push("/(member)/season-renewal")}
+          variant="secondary"
+        />
       </View>
-      <Pressable onPress={() => void signOut()} style={styles.button}>
-        <Text style={styles.buttonText}>Se déconnecter</Text>
-      </Pressable>
+      <Button label="Se deconnecter" onPress={() => void signOut()} variant="ghost" />
     </Screen>
   );
 }
@@ -101,33 +100,5 @@ const styles = StyleSheet.create({
   },
   links: {
     gap: 10
-  },
-  linkButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  linkButtonText: {
-    color: colors.primary,
-    fontSize: 15,
-    fontWeight: "600",
-    textAlign: "center"
-  },
-  button: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
   }
 });

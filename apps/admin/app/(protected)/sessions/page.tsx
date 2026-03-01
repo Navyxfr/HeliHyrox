@@ -2,11 +2,12 @@ import { createSession } from "@/lib/actions";
 import { getSessions } from "@/lib/adminData";
 
 export default async function SessionsPage() {
-  const sessions = await getSessions();
+  const { items: sessions, error } = await getSessions();
 
   return (
     <main className="page-shell">
       <h1 className="page-title">Seances</h1>
+      {error ? <p className="form-error">{error}</p> : null}
       <section className="panel">
         <h2>Nouvelle seance</h2>
         <form action={createSession} className="admin-form">
@@ -29,7 +30,7 @@ export default async function SessionsPage() {
         </form>
       </section>
       <div className="stack">
-        {sessions.map((session: Awaited<ReturnType<typeof getSessions>>[number]) => (
+        {sessions.map((session) => (
           <section className="panel" key={session.id}>
             <h2>{session.title}</h2>
             <p className="muted">Type: {session.sessionType}</p>

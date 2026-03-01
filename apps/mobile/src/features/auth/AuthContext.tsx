@@ -244,7 +244,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         setIsLoading(true);
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: "helihyrox://login"
+        });
         setIsLoading(false);
         return { error: error?.message ?? null };
       },

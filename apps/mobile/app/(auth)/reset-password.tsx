@@ -17,11 +17,11 @@ export default function ResetPasswordScreen() {
     <Screen scrollable>
       <View style={styles.header}>
         <Text style={styles.eyebrow}>Auth</Text>
-        <Text style={styles.title}>Réinitialiser le mot de passe</Text>
+        <Text style={styles.title}>Reinitialiser le mot de passe</Text>
         <Text style={styles.body}>
           {isSupabaseEnabled
-            ? "Saisissez votre adresse email pour recevoir un lien de réinitialisation."
-            : "Le reset password n’est disponible qu’avec Supabase configuré."}
+            ? "Saisissez votre adresse email pour recevoir un lien de reinitialisation."
+            : "Le reset password n'est disponible qu'avec Supabase configure."}
         </Text>
       </View>
       <AppTextInput
@@ -37,13 +37,13 @@ export default function ResetPasswordScreen() {
       <Button
         disabled={!isSupabaseEnabled}
         isLoading={isLoading}
-        label="Envoyer le lien de réinitialisation"
+        label="Envoyer le lien de reinitialisation"
         onPress={async () => {
           const result = await resetPassword(email);
           setErrorMessage(result.error);
 
           if (!result.error) {
-            showToast("Lien de réinitialisation envoyé.", "success");
+            showToast("Lien de reinitialisation envoye.", "success");
           }
         }}
       />

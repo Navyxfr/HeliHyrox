@@ -53,6 +53,7 @@ export default function LoginScreen() {
               setErrorMessage(result.error);
             }}
           />
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/(auth)/reset-password")}
@@ -110,6 +111,11 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 15,
     lineHeight: 22
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   },
   resetLink: {
     color: colors.primary,

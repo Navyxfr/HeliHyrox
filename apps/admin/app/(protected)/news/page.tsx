@@ -2,11 +2,12 @@ import { createNewsPost } from "@/lib/actions";
 import { getNewsPosts } from "@/lib/adminData";
 
 export default async function NewsPage() {
-  const posts = await getNewsPosts();
+  const { items: posts, error } = await getNewsPosts();
 
   return (
     <main className="page-shell">
       <h1 className="page-title">Actualites</h1>
+      {error ? <p className="form-error">{error}</p> : null}
       <section className="panel">
         <h2>Nouvelle actualite</h2>
         <form action={createNewsPost} className="admin-form">
@@ -23,7 +24,7 @@ export default async function NewsPage() {
         </form>
       </section>
       <div className="stack">
-        {posts.map((post: Awaited<ReturnType<typeof getNewsPosts>>[number]) => (
+        {posts.map((post) => (
           <section className="panel" key={post.id}>
             <h2>{post.title}</h2>
             <p className="muted">Visibilite: {post.visibility}</p>
