@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminNav } from "@/components/AdminNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,8 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body>
+        <AdminNav />
+        {children}
+      </body>
     </html>
   );
 }
-

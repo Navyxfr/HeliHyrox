@@ -25,6 +25,21 @@ body {
   min-height: 100vh;
 }
 
+.admin-nav {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px 0;
+}
+
+.nav-link {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--primary);
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
 .page-shell {
   max-width: 1200px;
   margin: 0 auto;
@@ -75,6 +90,11 @@ body {
   padding: 20px;
 }
 
+.panel-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .panel h2 {
   margin: 0 0 8px;
   color: var(--primary);
@@ -85,4 +105,70 @@ body {
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.page-title {
+  margin: 0 0 20px;
+  color: var(--primary);
+  font-size: 34px;
+}
+
+.stack {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.row-between {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.status-pill {
+  background: #eef3ff;
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+
+.check-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font: inherit;
+  padding: 12px 14px;
+}
+
+.primary-action {
+  background: var(--accent);
+  border: none;
+  border-radius: 14px;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 14px 16px;
 }

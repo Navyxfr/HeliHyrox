@@ -210,12 +210,17 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
 
         setIsLoading(true);
         setError(null);
-        const { error: profileError } = await supabase.from("profiles").upsert({
-          user_id: userId,
-          first_name: firstName,
-          last_name: lastName,
-          phone
-        });
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert(
+            {
+              user_id: userId,
+              first_name: firstName,
+              last_name: lastName,
+              phone
+            },
+            { onConflict: "user_id" }
+          );
 
         if (profileError) {
           setError(profileError.message);

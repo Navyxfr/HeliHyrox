@@ -1,11 +1,22 @@
+import Link from "next/link";
+
 const adminSections = [
-  "Demandes d'adhesion",
-  "Membres",
-  "Seances",
-  "Coachs",
-  "Actualites",
-  "Saisons"
-];
+  {
+    href: "/applications",
+    title: "Demandes d'adhesion",
+    copy: "Valider, refuser ou demander une correction sur les dossiers."
+  },
+  {
+    href: "/sessions",
+    title: "Seances",
+    copy: "Creer et suivre les seances de la saison active."
+  },
+  {
+    href: "/news",
+    title: "Actualites",
+    copy: "Publier les actus de la section et des evenements."
+  }
+] as const;
 
 export default function AdminHomePage() {
   return (
@@ -14,20 +25,18 @@ export default function AdminHomePage() {
         <p className="eyebrow">BUREAU HELIHYROX</p>
         <h1>Back-office admin</h1>
         <p className="hero-copy">
-          Base de travail pour la validation des adhesions, la gestion des seances
-          et le pilotage de la saison.
+          Back-office bureau relie aux donnees reelles quand Supabase admin est configure.
         </p>
       </section>
 
       <section className="grid">
         {adminSections.map((section) => (
-          <article className="panel" key={section}>
-            <h2>{section}</h2>
-            <p>Module a implementer dans les prochains lots.</p>
-          </article>
+          <Link className="panel panel-link" href={section.href} key={section.href}>
+            <h2>{section.title}</h2>
+            <p>{section.copy}</p>
+          </Link>
         ))}
       </section>
     </main>
   );
 }
-
