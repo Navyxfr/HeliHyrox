@@ -4,6 +4,7 @@ import { colors } from "@/theme/tokens";
 
 export default function MemberTabsLayout() {
   const { roles } = useAuth();
+  const isCoach = roles.includes("coach");
 
   return (
     <Tabs
@@ -21,9 +22,13 @@ export default function MemberTabsLayout() {
       <Tabs.Screen name="planning" options={{ title: "Planning" }} />
       <Tabs.Screen name="news" options={{ title: "News" }} />
       <Tabs.Screen name="profile" options={{ title: "Profil" }} />
-      {roles.includes("coach") ? (
-        <Tabs.Screen name="coach" options={{ title: "Coach" }} />
-      ) : null}
+      <Tabs.Screen
+        name="coach"
+        options={{
+          title: "Coach",
+          href: isCoach ? "/(member)/(tabs)/coach" : null
+        }}
+      />
     </Tabs>
   );
 }
