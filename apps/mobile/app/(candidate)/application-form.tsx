@@ -38,8 +38,9 @@ export default function ApplicationFormScreen() {
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
+        disabled={isLoading}
         onPress={() => void saveProfile({ firstName, lastName, phone })}
-        style={styles.button}
+        style={[styles.button, isLoading ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>
           {isLoading ? "Enregistrement..." : "Enregistrer le profil"}
@@ -65,6 +66,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   buttonText: {
     color: colors.primary,

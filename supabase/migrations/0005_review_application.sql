@@ -1,8 +1,7 @@
 create or replace function public.review_application(
   target_application_id uuid,
   next_status public.application_status,
-  next_review_comment text,
-  reviewer_user_id uuid
+  next_review_comment text
 )
 returns public.membership_applications
 language plpgsql
@@ -13,6 +12,10 @@ declare
   target_application public.membership_applications;
   reviewed_application public.membership_applications;
 begin
+  if not public.has_role('admin') then
+    raise exception 'Admin role required';
+  end if;
+
   select *
   into target_application
   from public.membership_applications
@@ -27,7 +30,7 @@ begin
     status = next_status,
     review_comment = nullif(next_review_comment, ''),
     validated_at = case when next_status = 'approved' then now() else null end,
-    validated_by = case when next_status = 'approved' then reviewer_user_id else null end,
+    validated_by = case when next_status = 'approved' then auth.uid() else null end,
     submitted_at = case
       when next_status = 'pending_review' and submitted_at is null then now()
       else submitted_at
@@ -65,4 +68,4 @@ begin
 end;
 $$;
 
-grant execute on function public.review_application(uuid, public.application_status, text, uuid) to authenticated;
+grant execute on function public.review_application(uuid, public.application_status, text) to authenticated;

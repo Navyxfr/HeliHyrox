@@ -7,6 +7,7 @@ import {
   useMemo,
   useState
 } from "react";
+import { useAuth } from "@/features/auth/AuthContext";
 import { supabase } from "@/services/supabase";
 import { formatDateLabel, formatTimeLabel } from "@/features/booking/formatters";
 import { mockSessions, type SessionItem } from "@/features/booking/mockData";
@@ -38,6 +39,7 @@ type BookingContextValue = {
 const BookingContext = createContext<BookingContextValue | null>(null);
 
 export function BookingProvider({ children }: { children: ReactNode }) {
+  const { userId } = useAuth();
   const [sessions, setSessions] = useState(mockSessions);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   }
 
   const refreshSessions = useCallback(async () => {
-    if (!supabase) {
+    if (!supabase || !userId) {
       return;
     }
 
@@ -78,11 +80,11 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 
     setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
     setIsLoading(false);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     async function load() {
-      if (!supabase) {
+      if (!supabase || !userId) {
         return;
       }
       await refreshSessions();
@@ -102,7 +104,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       error,
       refreshSessions,
       reserveSession: async (sessionId: string) => {
-        if (supabase) {
+        if (supabase && userId) {
           setIsLoading(true);
           setError(null);
           const { error: bookingError } = await supabase.rpc("book_session", {
@@ -132,7 +134,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         );
       },
       cancelBooking: async (sessionId: string) => {
-        if (supabase) {
+        if (supabase && userId) {
           setIsLoading(true);
           setError(null);
           const { error: bookingError } = await supabase.rpc("cancel_booking", {
@@ -163,7 +165,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       },
       getSessionById
     };
-  }, [error, isLoading, refreshSessions, sessions]);
+  }, [error, isLoading, refreshSessions, sessions, userId]);
 
   return (
     <BookingContext.Provider value={value}>{children}</BookingContext.Provider>

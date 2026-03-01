@@ -3,10 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/adminAuth";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { getSupabaseServer } from "@/lib/supabaseServer";
 
 export async function updateApplicationStatus(formData: FormData) {
   const adminUser = await requireAdminUser();
-  const supabase = getSupabaseAdmin();
+  const supabase = await getSupabaseServer();
 
   if (!supabase || !adminUser) {
     revalidatePath("/applications");
@@ -20,8 +21,7 @@ export async function updateApplicationStatus(formData: FormData) {
   await supabase.rpc("review_application", {
     target_application_id: applicationId,
     next_status: status,
-    next_review_comment: reviewComment,
-    reviewer_user_id: adminUser.id
+    next_review_comment: reviewComment
   });
 
   revalidatePath("/applications");

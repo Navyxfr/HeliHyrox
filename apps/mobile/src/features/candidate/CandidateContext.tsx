@@ -259,10 +259,13 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
       try {
         const response = await fetch(pickedDocument.uri);
         const arrayBuffer = await response.arrayBuffer();
+        const fileBlob = new Blob([arrayBuffer], {
+          type: pickedDocument.mimeType ?? "application/octet-stream"
+        });
 
         const { error: storageError } = await supabase.storage
           .from("membership-documents")
-          .upload(storagePath, arrayBuffer, {
+          .upload(storagePath, fileBlob, {
             contentType: pickedDocument.mimeType ?? undefined,
             upsert: true
           });
@@ -399,6 +402,11 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
           hasRulesAccepted: application.documents.rulesAccepted,
           hasProfile: Boolean(application.firstName && application.lastName)
         });
+
+        if (nextStatus !== "pending_review") {
+          setError("Le dossier doit etre complet avant soumission au bureau.");
+          return;
+        }
 
         if (!supabase || !userId) {
           setApplication((current) =>

@@ -6,6 +6,7 @@ import { colors } from "@/theme/tokens";
 
 export default function RulesAcceptanceScreen() {
   const { application, acceptRules, error, isLoading } = useCandidate();
+  const isAccepted = Boolean(application?.documents.rulesAccepted);
 
   return (
     <Screen>
@@ -18,9 +19,13 @@ export default function RulesAcceptanceScreen() {
         Statut: {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable onPress={() => void acceptRules()} style={styles.button}>
+      <Pressable
+        disabled={isLoading || isAccepted}
+        onPress={() => void acceptRules()}
+        style={[styles.button, isLoading || isAccepted ? styles.buttonDisabled : null]}
+      >
         <Text style={styles.buttonText}>
-          {isLoading ? "Validation..." : "Accepter le reglement"}
+          {isAccepted ? "Reglement deja accepte" : isLoading ? "Validation..." : "Accepter le reglement"}
         </Text>
       </Pressable>
     </Screen>
@@ -42,6 +47,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   buttonText: {
     color: colors.primary,

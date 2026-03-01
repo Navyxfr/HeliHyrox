@@ -6,6 +6,13 @@ import { colors } from "@/theme/tokens";
 
 export default function ApplicationStatusScreen() {
   const { application, error, isLoading, submitApplication } = useCandidate();
+  const canSubmit = Boolean(
+    application?.firstName &&
+      application?.lastName &&
+      application?.documents.medicalCertificateUploaded &&
+      application?.documents.paymentProofUploaded &&
+      application?.documents.rulesAccepted
+  );
 
   return (
     <Screen>
@@ -31,9 +38,17 @@ export default function ApplicationStatusScreen() {
         </Text>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable onPress={() => void submitApplication()} style={styles.button}>
+      <Pressable
+        disabled={isLoading || !canSubmit}
+        onPress={() => void submitApplication()}
+        style={[styles.button, isLoading || !canSubmit ? styles.buttonDisabled : null]}
+      >
         <Text style={styles.buttonText}>
-          {isLoading ? "Mise a jour..." : "Mettre a jour le statut du dossier"}
+          {isLoading
+            ? "Mise a jour..."
+            : canSubmit
+              ? "Soumettre le dossier au bureau"
+              : "Dossier incomplet"}
         </Text>
       </Pressable>
     </Screen>
@@ -66,6 +81,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   buttonText: {
     color: colors.primary,
