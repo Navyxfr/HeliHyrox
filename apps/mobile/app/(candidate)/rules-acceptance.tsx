@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text } from "react-native";
-import { useToast } from "@/components/Toast";
+import { StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
+import { useToast } from "@/components/Toast";
+import { Button } from "@/components/ui/Button";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -12,29 +13,32 @@ export default function RulesAcceptanceScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Acceptation règlement" />
+      <StackHeader title="Acceptation reglement" />
       <Text style={styles.copy}>
-        Le règlement intérieur doit être accepté explicitement pour la saison{" "}
+        Le reglement interieur doit etre accepte explicitement pour la saison{" "}
         {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
+        Statut : {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable
+      <Button
         disabled={isLoading || isAccepted}
+        label={
+          isAccepted
+            ? "Reglement deja accepte"
+            : isLoading
+              ? "Validation..."
+              : "Accepter le reglement"
+        }
         onPress={async () => {
           const success = await acceptRules();
+
           if (success) {
-            showToast("Règlement accepté.", "success");
+            showToast("Reglement accepte.", "success");
           }
         }}
-        style={[styles.button, isLoading || isAccepted ? styles.buttonDisabled : null]}
-      >
-        <Text style={styles.buttonText}>
-          {isAccepted ? "Règlement déjà accepté" : isLoading ? "Validation..." : "Accepter le règlement"}
-        </Text>
-      </Pressable>
+      />
     </Screen>
   );
 }
@@ -48,21 +52,6 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.textMuted,
     fontSize: 13
-  },
-  button: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonDisabled: {
-    opacity: 0.6
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   },
   error: {
     color: colors.danger,

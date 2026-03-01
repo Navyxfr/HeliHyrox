@@ -1,40 +1,36 @@
-import { Pressable, StyleSheet, Text } from "react-native";
-import { useToast } from "@/components/Toast";
+import { StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
+import { useToast } from "@/components/Toast";
+import { Button } from "@/components/ui/Button";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
 export default function MedicalCertificateScreen() {
   const { showToast } = useToast();
-  const { application, error, isLoading, uploadMedicalCertificate } =
-    useCandidate();
+  const { application, error, isLoading, uploadMedicalCertificate } = useCandidate();
 
   return (
     <Screen scrollable>
-      <StackHeader title="Certificat médical" />
+      <StackHeader title="Certificat medical" />
       <Text style={styles.copy}>
-        Déposez votre certificat médical pour la saison {application?.seasonLabel}.
+        Deposez votre certificat medical pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut :{" "}
-        {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
+        Statut : {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable
+      <Button
         disabled={isLoading}
+        label={isLoading ? "Envoi..." : "Choisir et envoyer un document"}
         onPress={async () => {
           const success = await uploadMedicalCertificate();
+
           if (success) {
-            showToast("Certificat déposé.", "success");
+            showToast("Certificat depose.", "success");
           }
         }}
-        style={[styles.button, isLoading ? styles.buttonDisabled : null]}
-      >
-        <Text style={styles.buttonText}>
-          {isLoading ? "Envoi..." : "Choisir et envoyer un document"}
-        </Text>
-      </Pressable>
+      />
     </Screen>
   );
 }
@@ -48,21 +44,6 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.textMuted,
     fontSize: 13
-  },
-  button: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonDisabled: {
-    opacity: 0.6
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   },
   error: {
     color: colors.danger,

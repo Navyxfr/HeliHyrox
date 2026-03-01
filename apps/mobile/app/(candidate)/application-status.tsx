@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useToast } from "@/components/Toast";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
+import { useToast } from "@/components/Toast";
+import { Button } from "@/components/ui/Button";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -28,36 +29,35 @@ export default function ApplicationStatusScreen() {
         </Text>
         <Text style={styles.label}>Certificat</Text>
         <Text style={styles.value}>
-          {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
+          {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
         </Text>
-        <Text style={styles.label}>Règlement</Text>
+        <Text style={styles.label}>Reglement</Text>
         <Text style={styles.value}>
-          {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
+          {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
         </Text>
         <Text style={styles.label}>Paiement</Text>
         <Text style={styles.value}>
-          {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
+          {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
         </Text>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable
+      <Button
         disabled={isLoading || !canSubmit}
+        label={
+          isLoading
+            ? "Mise a jour..."
+            : canSubmit
+              ? "Soumettre le dossier au bureau"
+              : "Dossier incomplet"
+        }
         onPress={async () => {
           const success = await submitApplication();
+
           if (success) {
             showToast("Dossier soumis au bureau.", "success");
           }
         }}
-        style={[styles.button, isLoading || !canSubmit ? styles.buttonDisabled : null]}
-      >
-        <Text style={styles.buttonText}>
-          {isLoading
-            ? "Mise à jour..."
-            : canSubmit
-              ? "Soumettre le dossier au bureau"
-              : "Dossier incomplet"}
-        </Text>
-      </Pressable>
+      />
     </Screen>
   );
 }
@@ -82,21 +82,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 15,
     lineHeight: 22
-  },
-  button: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonDisabled: {
-    opacity: 0.6
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   },
   error: {
     color: colors.danger,

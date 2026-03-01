@@ -8,6 +8,7 @@ import {
   useState
 } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/theme/tokens";
 
 type ToastTone = "success" | "error" | "info";
@@ -24,6 +25,7 @@ type ToastState = {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const insets = useSafeAreaInsets();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
 
@@ -45,7 +47,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={value}>
       {children}
       {toast ? (
-        <View pointerEvents="box-none" style={styles.wrapper}>
+        <View
+          pointerEvents="box-none"
+          style={[styles.wrapper, { bottom: Math.max(insets.bottom + 16, 90) }]}
+        >
           <Pressable
             onPress={() => setToast(null)}
             style={[
@@ -77,7 +82,6 @@ export function useToast() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    bottom: 24,
     left: 20,
     position: "absolute",
     right: 20
