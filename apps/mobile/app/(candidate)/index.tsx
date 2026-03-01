@@ -21,6 +21,26 @@ export default function CandidateDashboardScreen() {
             <Text style={styles.primaryButtonText}>Completer le dossier</Text>
           </Pressable>
         </Link>
+        <Link href="/(candidate)/medical-certificate" asChild>
+          <Pressable style={styles.secondaryButton}>
+            <Text style={styles.secondaryButtonText}>Certificat medical</Text>
+          </Pressable>
+        </Link>
+        <Link href="/(candidate)/rules" asChild>
+          <Pressable style={styles.secondaryButton}>
+            <Text style={styles.secondaryButtonText}>Consulter le reglement</Text>
+          </Pressable>
+        </Link>
+        <Link href="/(candidate)/payment-info" asChild>
+          <Pressable style={styles.secondaryButton}>
+            <Text style={styles.secondaryButtonText}>Voir les infos paiement</Text>
+          </Pressable>
+        </Link>
+        <Link href="/(candidate)/application-status" asChild>
+          <Pressable style={styles.secondaryButton}>
+            <Text style={styles.secondaryButtonText}>Suivre le dossier</Text>
+          </Pressable>
+        </Link>
         <Link href="/(candidate)/pending" asChild>
           <Pressable style={styles.secondaryButton}>
             <Text style={styles.secondaryButtonText}>Voir le statut pending</Text>

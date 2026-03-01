@@ -15,6 +15,16 @@ export default function PendingDashboardScreen() {
         title="PendingDashboard"
         body={`Dossier soumis et en attente de validation bureau.${email ? ` Compte: ${email}.` : ""} En cas de correction demandee, retour vers le parcours candidat.`}
       />
+      <Link href="/(candidate)/application-status" asChild>
+        <Pressable style={styles.secondaryButton}>
+          <Text style={styles.secondaryButtonText}>Voir le statut detaille</Text>
+        </Pressable>
+      </Link>
+      <Link href="/(candidate)/correction-request" asChild>
+        <Pressable style={styles.secondaryButton}>
+          <Text style={styles.secondaryButtonText}>Voir une demande de correction</Text>
+        </Pressable>
+      </Link>
       <Link href="/(candidate)" asChild>
         <Pressable style={styles.secondaryButton}>
           <Text style={styles.secondaryButtonText}>Simuler retour correction</Text>
