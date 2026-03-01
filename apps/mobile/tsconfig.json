@@ -1,13 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "react-jsx",
     "types": [
+      "react",
+      "react-native",
       "expo-router"
     ],
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/*"
       ]
     }
   },
@@ -18,4 +21,3 @@
     "expo-env.d.ts"
   ]
 }
-

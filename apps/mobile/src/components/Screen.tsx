@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/theme/tokens";
 
 type ScreenProps = {
@@ -20,4 +21,3 @@ const styles = StyleSheet.create({
     paddingVertical: 32
   }
 });
-
