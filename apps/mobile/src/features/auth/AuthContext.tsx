@@ -7,6 +7,7 @@ import type {
 } from "@helihyrox/shared";
 import { usePathname, useRouter, useSegments } from "expo-router";
 import {
+  useCallback,
   createContext,
   ReactNode,
   useContext,
@@ -111,50 +112,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function loadSupabaseUserState(userId: string, userEmail: string | null) {
-    if (!supabase) {
-      return;
-    }
+  const loadSupabaseUserState = useCallback(
+    async (userId: string, userEmail: string | null) => {
+      if (!supabase) {
+        return;
+      }
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    const [rolesResult, membershipsResult, applicationsResult] = await Promise.all([
-      supabase.from("user_roles").select("role").eq("user_id", userId),
-      supabase
+      const activeSeasonResult = await supabase
+        .from("seasons")
+        .select("id")
+        .eq("is_active", true)
+        .order("starts_at", { ascending: false })
+        .limit(1);
+
+      const activeSeasonId = activeSeasonResult.data?.[0]?.id ?? null;
+
+      let membershipsQuery = supabase
         .from("memberships")
         .select("status, activated_at")
         .eq("user_id", userId)
         .order("activated_at", { ascending: false })
-        .limit(1),
-      supabase
+        .limit(1);
+
+      let applicationsQuery = supabase
         .from("membership_applications")
         .select("status, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
-        .limit(1)
-    ]);
+        .limit(1);
 
-    const roles =
-      rolesResult.data?.map((row) => row.role as UserRole) ??
-      (membershipsResult.data?.length ? (["member"] as UserRole[]) : []);
+      if (activeSeasonId) {
+        membershipsQuery = membershipsQuery.eq("season_id", activeSeasonId);
+        applicationsQuery = applicationsQuery.eq("season_id", activeSeasonId);
+      }
 
-    const membershipStatus =
-      (membershipsResult.data?.[0]?.status as MembershipStatus | undefined) ?? null;
-    const applicationStatus =
-      (applicationsResult.data?.[0]?.status as ApplicationStatus | undefined) ?? null;
+      const [rolesResult, membershipsResult, applicationsResult] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", userId),
+        membershipsQuery,
+        applicationsQuery
+      ]);
 
-    const derivedStatus = deriveStatusFromData({
-      membershipStatus,
-      applicationStatus
-    });
+      const membershipStatus =
+        (membershipsResult.data?.[0]?.status as MembershipStatus | undefined) ?? null;
+      const applicationStatus =
+        (applicationsResult.data?.[0]?.status as ApplicationStatus | undefined) ?? null;
 
-    setMockSession({
-      derivedStatus,
-      roles,
-      email: userEmail
-    });
-    setIsLoading(false);
-  }
+      const derivedStatus = deriveStatusFromData({
+        membershipStatus,
+        applicationStatus
+      });
+
+      const roles = rolesResult.error
+        ? []
+        : rolesResult.data && rolesResult.data.length > 0
+          ? rolesResult.data.map((row) => row.role as UserRole)
+          : membershipStatus
+            ? (["member"] as UserRole[])
+            : [];
+
+      setMockSession({
+        derivedStatus,
+        roles,
+        email: userEmail
+      });
+      setIsLoading(false);
+    },
+    []
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -190,7 +216,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [loadSupabaseUserState]);
 
   useEffect(() => {
     if (!supabase) {
@@ -213,7 +239,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [loadSupabaseUserState]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

@@ -55,36 +55,40 @@ export default function LoginScreen() {
           </Pressable>
         </>
       ) : null}
-      <Pressable
-        onPress={() => void signInAs("candidate")}
-        style={styles.primaryButton}
-      >
-        <Text style={styles.primaryButtonText}>Simuler candidat</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => void signInAs("pending_member")}
-        style={styles.secondaryButton}
-      >
-        <Text style={styles.secondaryButtonText}>Simuler pending</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => void signInAs("member_active")}
-        style={styles.secondaryButton}
-      >
-        <Text style={styles.secondaryButtonText}>Simuler membre actif</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => void signInAs("member_active", ["member", "coach"])}
-        style={styles.secondaryButton}
-      >
-        <Text style={styles.secondaryButtonText}>Simuler coach</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => void signInAs("suspended")}
-        style={styles.secondaryButton}
-      >
-        <Text style={styles.secondaryButtonText}>Simuler suspendu</Text>
-      </Pressable>
+      {!isSupabaseEnabled ? (
+        <>
+          <Pressable
+            onPress={() => void signInAs("candidate")}
+            style={styles.primaryButton}
+          >
+            <Text style={styles.primaryButtonText}>Simuler candidat</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => void signInAs("pending_member")}
+            style={styles.secondaryButton}
+          >
+            <Text style={styles.secondaryButtonText}>Simuler pending</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => void signInAs("member_active")}
+            style={styles.secondaryButton}
+          >
+            <Text style={styles.secondaryButtonText}>Simuler membre actif</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => void signInAs("member_active", ["member", "coach"])}
+            style={styles.secondaryButton}
+          >
+            <Text style={styles.secondaryButtonText}>Simuler coach</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => void signInAs("suspended")}
+            style={styles.secondaryButton}
+          >
+            <Text style={styles.secondaryButtonText}>Simuler suspendu</Text>
+          </Pressable>
+        </>
+      ) : null}
     </Screen>
   );
 }

@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
@@ -8,6 +9,7 @@ import { colors } from "@/theme/tokens";
 
 export default function RegisterScreen() {
   const { isLoading, isSupabaseEnabled, signUp } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -47,6 +49,9 @@ export default function RegisterScreen() {
             onPress={async () => {
               const result = await signUp(email, password);
               setErrorMessage(result.error);
+              if (!result.error) {
+                router.replace("/(auth)/verify-email");
+              }
             }}
             style={styles.primaryButton}
           >
