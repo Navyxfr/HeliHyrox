@@ -1,58 +1,54 @@
 import { Link } from "expo-router";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Screen } from "@/components/Screen";
+import { colors } from "@/theme/tokens";
 
 export default function PublicHomeScreen() {
   return (
-    <SafeAreaView style={styles.screen}>
+    <Screen>
       <View style={styles.hero}>
         <Text style={styles.kicker}>AIRBUS HELICOPTERS / SECTION SPORTIVE</Text>
         <Text style={styles.title}>HeliHyrox</Text>
         <Text style={styles.subtitle}>
-          Parcours public, adhesion de saison, espace membre, coach et admin.
+          Application publique pour adhesion de saison, espace membre, coach et
+          bureau.
         </Text>
       </View>
 
       <View style={styles.actions}>
-        <Link href="/candidate" asChild>
+        <Link href="/(auth)/login" asChild>
           <Pressable style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>Demarrer une adhesion</Text>
+            <Text style={styles.primaryButtonText}>Se connecter</Text>
           </Pressable>
         </Link>
-        <Link href="/member" asChild>
+        <Link href="/(auth)/register" asChild>
           <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Voir la base membre</Text>
+            <Text style={styles.secondaryButtonText}>Creer un compte</Text>
           </Pressable>
         </Link>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: "#F4F7FB",
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    justifyContent: "space-between"
-  },
   hero: {
     gap: 12,
     paddingTop: 32
   },
   kicker: {
-    color: "#5F718A",
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 1
   },
   title: {
-    color: "#00205B",
+    color: colors.primary,
     fontSize: 40,
     fontWeight: "800"
   },
   subtitle: {
-    color: "#32465E",
+    color: colors.text,
     fontSize: 16,
     lineHeight: 24
   },
@@ -60,29 +56,30 @@ const styles = StyleSheet.create({
     gap: 12
   },
   primaryButton: {
-    backgroundColor: "#FFED00",
+    backgroundColor: colors.accent,
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
   },
   primaryButtonText: {
-    color: "#00205B",
+    color: colors.primary,
     fontSize: 16,
     fontWeight: "700",
     textAlign: "center"
   },
   secondaryButton: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#D6DFEA",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: 18,
     paddingVertical: 16
   },
   secondaryButtonText: {
-    color: "#00205B",
+    color: colors.primary,
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center"
   }
 });
+
