@@ -20,8 +20,12 @@ export function canAccessPath(
   pathname: string,
   firstSegment?: string
 ) {
-  if (firstSegment === "(public)" || firstSegment === "(auth)") {
+  if (firstSegment === "(public)") {
     return true;
+  }
+
+  if (firstSegment === "(auth)") {
+    return status === "public";
   }
 
   if (status === "public") {
