@@ -1,8 +1,10 @@
+import { applicationStatusLabels } from "@helihyrox/shared";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/features/auth/AuthContext";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { CandidateStepper } from "@/features/candidate/components/CandidateStepper";
 import { colors } from "@/theme/tokens";
@@ -20,10 +22,11 @@ export default function CandidateDashboardScreen() {
         <Text style={styles.body}>
           {email ? `Compte ${email}. ` : ""}
           {application
-            ? `Saison ${application.seasonLabel}, statut actuel : ${application.status}.`
+            ? `Saison ${application.seasonLabel}, statut actuel : ${applicationStatusLabels[application.status]}.`
             : "Completez chaque etape pour soumettre votre dossier au bureau."}
         </Text>
       </View>
+      <SessionPanel body="Vous pouvez revenir a l'accueil public ou changer de compte a tout moment." />
       {isLoading ? <Text style={styles.meta}>Chargement du dossier...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {application ? <CandidateStepper application={application} /> : null}

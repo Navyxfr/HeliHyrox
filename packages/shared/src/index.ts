@@ -59,9 +59,17 @@ export const applicationStatusLabels: Record<ApplicationStatus, string> = {
   draft: "Brouillon",
   incomplete: "Dossier incomplet",
   pending_review: "En attente",
-  changes_requested: "Correction demandée",
-  approved: "Validé",
-  rejected: "Refusé"
+  changes_requested: "Correction demandee",
+  approved: "Valide",
+  rejected: "Refuse"
+};
+
+export const derivedStatusLabels: Record<DerivedStatus, string> = {
+  public: "Public",
+  candidate: "Candidat",
+  pending_member: "En attente de validation",
+  member_active: "Membre actif",
+  suspended: "Suspendu"
 };
 
 export interface Profile {

@@ -3,6 +3,7 @@ import { StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -13,6 +14,7 @@ export default function PaymentInfoScreen() {
   return (
     <Screen>
       <StackHeader title="Informations paiement" />
+      <SessionPanel />
       <Text style={styles.copy}>Montant: {application?.membershipFeeLabel ?? "A definir"}</Text>
       <Text style={styles.copy}>RIB section: {application?.ribLabel ?? "N/A"}</Text>
       <Button

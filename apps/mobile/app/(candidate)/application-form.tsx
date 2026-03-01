@@ -4,6 +4,7 @@ import { StackHeader } from "@/components/StackHeader";
 import { useToast } from "@/components/Toast";
 import { AppTextInput } from "@/components/ui/AppTextInput";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 
 export default function ApplicationFormScreen() {
@@ -15,30 +16,29 @@ export default function ApplicationFormScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Dossier adhésion" />
+      <StackHeader title="Dossier adhesion" />
+      <SessionPanel />
       <AppTextInput
-        accessibilityLabel="Prénom"
-        error={null}
-        label="Prénom"
+        accessibilityLabel="Prenom"
+        label="Prenom"
         onChangeText={setFirstName}
-        placeholder="Prénom"
+        placeholder="Prenom"
         value={firstName}
       />
       <AppTextInput
         accessibilityLabel="Nom"
-        error={null}
         label="Nom"
         onChangeText={setLastName}
         placeholder="Nom"
         value={lastName}
       />
       <AppTextInput
-        accessibilityLabel="Téléphone"
+        accessibilityLabel="Telephone"
         error={error}
         keyboardType="phone-pad"
-        label="Téléphone"
+        label="Telephone"
         onChangeText={setPhone}
-        placeholder="Téléphone"
+        placeholder="Telephone"
         value={phone}
       />
       <Button
@@ -48,7 +48,7 @@ export default function ApplicationFormScreen() {
           const success = await saveProfile({ firstName, lastName, phone });
 
           if (success) {
-            showToast("Profil enregistré.", "success");
+            showToast("Profil enregistre.", "success");
           }
         }}
       />

@@ -6,7 +6,9 @@ export async function requireAdminUser() {
   const supabase = await getSupabaseServer();
 
   if (!supabase) {
-    return null;
+    redirect(
+      "/login?error=Configuration%20Supabase%20requise%20pour%20le%20back-office." as Route
+    );
   }
 
   const {

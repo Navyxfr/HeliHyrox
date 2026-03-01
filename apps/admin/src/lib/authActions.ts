@@ -8,7 +8,9 @@ export async function signInAdmin(formData: FormData) {
   const supabase = await getSupabaseServer();
 
   if (!supabase) {
-    redirect("/" as Route);
+    redirect(
+      "/login?error=Configuration%20Supabase%20requise%20pour%20la%20connexion%20admin." as Route
+    );
   }
 
   const email = String(formData.get("email"));

@@ -3,6 +3,7 @@ import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -12,12 +13,13 @@ export default function MedicalCertificateScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Certificat médical" />
+      <StackHeader title="Certificat medical" />
+      <SessionPanel />
       <Text style={styles.copy}>
-        Déposez votre certificat médical pour la saison {application?.seasonLabel}.
+        Deposez votre certificat medical pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
+        Statut : {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
@@ -27,7 +29,7 @@ export default function MedicalCertificateScreen() {
           const success = await uploadMedicalCertificate();
 
           if (success) {
-            showToast("Certificat déposé.", "success");
+            showToast("Certificat depose.", "success");
           }
         }}
       />

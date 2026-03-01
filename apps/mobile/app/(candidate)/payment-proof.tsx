@@ -3,6 +3,7 @@ import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -13,11 +14,12 @@ export default function PaymentProofScreen() {
   return (
     <Screen scrollable>
       <StackHeader title="Preuve de paiement" />
+      <SessionPanel />
       <Text style={styles.copy}>
-        Déposez le justificatif de paiement pour la saison {application?.seasonLabel}.
+        Deposez le justificatif de paiement pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
+        Statut : {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
@@ -27,7 +29,7 @@ export default function PaymentProofScreen() {
           const success = await uploadPaymentProof();
 
           if (success) {
-            showToast("Preuve de paiement déposée.", "success");
+            showToast("Preuve de paiement deposee.", "success");
           }
         }}
       />

@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { colors } from "@/theme/tokens";
 
 export default function RulesViewScreen() {
@@ -9,6 +10,7 @@ export default function RulesViewScreen() {
 
   return (
     <Screen scrollable>
+      <SessionPanel />
       <View style={styles.card}>
         <Text style={styles.eyebrow}>Reglement interieur</Text>
         <Text style={styles.title}>Conditions d'adhesion</Text>

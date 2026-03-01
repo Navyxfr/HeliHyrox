@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
@@ -11,6 +12,7 @@ export default function PendingDashboardScreen() {
 
   return (
     <Screen scrollable>
+      <SessionPanel />
       <View style={styles.card}>
         <Text style={styles.eyebrow}>Validation bureau</Text>
         <Text style={styles.title}>Dossier envoye</Text>

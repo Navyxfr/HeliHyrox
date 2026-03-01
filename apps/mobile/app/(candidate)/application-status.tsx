@@ -4,6 +4,7 @@ import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
+import { SessionPanel } from "@/features/auth/components/SessionPanel";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
@@ -21,6 +22,7 @@ export default function ApplicationStatusScreen() {
   return (
     <Screen scrollable>
       <StackHeader title="Statut du dossier" />
+      <SessionPanel />
       <View style={styles.card}>
         <Text style={styles.label}>Statut</Text>
         <Text style={styles.value}>
@@ -32,15 +34,15 @@ export default function ApplicationStatusScreen() {
         </Text>
         <Text style={styles.label}>Certificat</Text>
         <Text style={styles.value}>
-          {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
+          {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
         </Text>
-        <Text style={styles.label}>Règlement</Text>
+        <Text style={styles.label}>Reglement</Text>
         <Text style={styles.value}>
-          {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
+          {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
         </Text>
         <Text style={styles.label}>Paiement</Text>
         <Text style={styles.value}>
-          {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
+          {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
         </Text>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}

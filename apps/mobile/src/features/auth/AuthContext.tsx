@@ -16,6 +16,7 @@ import {
   type ReactNode
 } from "react";
 import { deriveStatusFromData } from "@/features/auth/deriveStatus";
+import { canAccessPath, getTargetPath } from "@/features/auth/routeAccess";
 import { supabase } from "@/services/supabase";
 
 type MockSession = {
@@ -65,45 +66,6 @@ function getDefaultEmail(status: DerivedStatus) {
     default:
       return null;
   }
-}
-
-function getTargetPath(status: DerivedStatus) {
-  switch (status) {
-    case "candidate":
-      return "/(candidate)";
-    case "pending_member":
-      return "/(candidate)/pending";
-    case "member_active":
-      return "/(member)/(tabs)";
-    case "suspended":
-      return "/(member)/(tabs)/profile";
-    default:
-      return "/(public)";
-  }
-}
-
-function canAccessPath(
-  status: DerivedStatus,
-  pathname: string,
-  firstSegment?: string
-) {
-  if (status === "public") {
-    return firstSegment === "(public)" || firstSegment === "(auth)";
-  }
-
-  if (status === "candidate" || status === "pending_member") {
-    return firstSegment === "(candidate)";
-  }
-
-  if (status === "member_active") {
-    return firstSegment === "(member)";
-  }
-
-  if (status === "suspended") {
-    return pathname === "/(member)/(tabs)/profile";
-  }
-
-  return false;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
