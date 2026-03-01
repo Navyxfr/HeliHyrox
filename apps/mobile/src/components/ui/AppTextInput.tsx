@@ -1,17 +1,41 @@
-import { TextInput, StyleSheet, type TextInputProps } from "react-native";
+import { Text, TextInput, View, StyleSheet, type TextInputProps } from "react-native";
 import { colors } from "@/theme/tokens";
 
-export function AppTextInput(props: TextInputProps) {
+type AppTextInputProps = TextInputProps & {
+  label?: string;
+  error?: string | null;
+};
+
+export function AppTextInput({
+  accessibilityLabel,
+  error,
+  label,
+  style,
+  ...props
+}: AppTextInputProps) {
   return (
-    <TextInput
-      placeholderTextColor={colors.textMuted}
-      {...props}
-      style={[styles.input, props.style]}
-    />
+    <View style={styles.wrapper}>
+      {label ? <Text style={styles.label}>{label}</Text> : null}
+      <TextInput
+        accessibilityLabel={accessibilityLabel ?? label ?? props.placeholder}
+        placeholderTextColor={colors.textMuted}
+        {...props}
+        style={[styles.input, error ? styles.inputError : null, style]}
+      />
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    gap: 8
+  },
+  label: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "600"
+  },
   input: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
@@ -21,5 +45,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingHorizontal: 16,
     paddingVertical: 14
+  },
+  inputError: {
+    borderColor: colors.danger
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   }
 });

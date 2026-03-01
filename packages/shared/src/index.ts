@@ -55,6 +55,15 @@ export type NewsVisibilityLevel = (typeof newsVisibilityLevels)[number];
 export type SessionType = (typeof sessionTypes)[number];
 export type NotificationType = (typeof notificationTypes)[number];
 
+export const applicationStatusLabels: Record<ApplicationStatus, string> = {
+  draft: "Brouillon",
+  incomplete: "Dossier incomplet",
+  pending_review: "En attente",
+  changes_requested: "Correction demandée",
+  approved: "Validé",
+  rejected: "Refusé"
+};
+
 export interface Profile {
   id: string;
   userId: string;

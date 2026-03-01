@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { EmptyState } from "@/components/EmptyState";
 import { Screen } from "@/components/Screen";
 import { mockSessions } from "@/features/booking/mockData";
 import { supabase } from "@/services/supabase";
 import { colors } from "@/theme/tokens";
+
+type CoachAttendee = {
+  userId: string;
+  fullName: string;
+};
 
 type CoachSessionItem = {
   id: string;
@@ -14,7 +19,7 @@ type CoachSessionItem = {
   location: string;
   bookedCount: number;
   capacity: number;
-  attendees: string[];
+  attendees: CoachAttendee[];
 };
 
 type CoachSessionRpcRow = {
@@ -59,18 +64,28 @@ function createMockCoachSessions(): CoachSessionItem[] {
       location: session.location,
       bookedCount: session.bookedCount,
       capacity: session.capacity,
-      attendees: ["Tom M.", "Julie R.", "Marc D."]
+      attendees: [
+        { userId: "mock-tom", fullName: "Tom M." },
+        { userId: "mock-julie", fullName: "Julie R." },
+        { userId: "mock-marc", fullName: "Marc D." }
+      ]
     }));
 }
 
 export default function CoachSessionsScreen() {
   const [sessions, setSessions] = useState<CoachSessionItem[]>(createMockCoachSessions);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
+  const loadCoachSessions = useCallback(async (refreshing = false) => {
+    if (refreshing) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
 
-    async function loadCoachSessions() {
+    try {
       if (!supabase) {
         setSessions(createMockCoachSessions());
         return;
@@ -81,9 +96,7 @@ export default function CoachSessionsScreen() {
       const coachSessionsResult = await supabase.rpc("get_coach_sessions");
 
       if (coachSessionsResult.error) {
-        if (isMounted) {
-          setError(coachSessionsResult.error.message);
-        }
+        setError(coachSessionsResult.error.message);
         return;
       }
 
@@ -93,44 +106,60 @@ export default function CoachSessionsScreen() {
           title: session.title,
           dateLabel: formatDateLabel(session.starts_at),
           timeLabel: formatTimeLabel(session.starts_at, session.ends_at),
-          location: session.location ?? "Lieu a definir",
+          location: session.location ?? "Lieu à définir",
           bookedCount: Number(session.booked_count),
           capacity: session.capacity,
-          attendees: (session.attendees ?? []).map(
-            (attendee) => attendee.full_name || attendee.user_id.slice(0, 8)
-          )
+          attendees: (session.attendees ?? []).map((attendee) => ({
+            userId: attendee.user_id,
+            fullName: attendee.full_name || attendee.user_id.slice(0, 8)
+          }))
         })
       );
 
-      if (isMounted) {
-        setSessions(nextSessions);
-      }
+      setSessions(nextSessions);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
     }
-
-    void loadCoachSessions();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
+  useEffect(() => {
+    void loadCoachSessions(false);
+  }, [loadCoachSessions]);
+
   return (
-    <Screen scrollable>
+    <Screen
+      refreshControlProps={{
+        onRefresh: () => {
+          void loadCoachSessions(true);
+        },
+        refreshing: isRefreshing,
+        tintColor: colors.primary
+      }}
+      scrollable
+    >
       <View style={styles.header}>
         <Text style={styles.eyebrow}>Coach</Text>
-        <Text style={styles.title}>Mes seances assignees</Text>
+        <Text style={styles.title}>Mes séances assignées</Text>
         <Text style={styles.copy}>
-          Retrouvez vos prochains cours et la liste des inscrits en temps reel.
+          Retrouvez vos prochains cours et la liste des inscrits en temps réel.
         </Text>
       </View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      {sessions.length === 0 ? (
+      {isLoading ? (
+        <View style={styles.loadingCard}>
+          <ActivityIndicator color={colors.primary} size="small" />
+          <Text style={styles.loadingText}>Chargement des séances coach...</Text>
+        </View>
+      ) : null}
+
+      {!isLoading && sessions.length === 0 ? (
         <EmptyState
           eyebrow="Coach"
-          title="Aucune seance assignee"
-          description="Les seances qui vous sont attribuees apparaitront ici avec la liste des inscrits."
+          title="Aucune séance assignée"
+          description="Les séances qui vous sont attribuées apparaîtront ici avec la liste des inscrits."
         />
       ) : (
         sessions.map((session) => (
@@ -147,8 +176,8 @@ export default function CoachSessionsScreen() {
                 <Text style={styles.attendeeEmpty}>Aucun inscrit pour le moment.</Text>
               ) : (
                 session.attendees.map((attendee) => (
-                  <View key={`${session.id}-${attendee}`} style={styles.attendeePill}>
-                    <Text style={styles.attendeeText}>{attendee}</Text>
+                  <View key={`${session.id}-${attendee.userId}`} style={styles.attendeePill}>
+                    <Text style={styles.attendeeText}>{attendee.fullName}</Text>
                   </View>
                 ))
               )}
@@ -185,6 +214,19 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontSize: 13,
     fontWeight: "600"
+  },
+  loadingCard: {
+    alignItems: "center",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 10,
+    padding: 18
+  },
+  loadingText: {
+    color: colors.textMuted,
+    fontSize: 14
   },
   card: {
     backgroundColor: colors.surface,

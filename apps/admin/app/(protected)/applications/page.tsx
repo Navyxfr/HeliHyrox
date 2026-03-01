@@ -1,14 +1,6 @@
+import { applicationStatusLabels } from "@helihyrox/shared";
 import { updateApplicationStatus } from "@/lib/actions";
 import { getApplications } from "@/lib/adminData";
-
-const statusLabels = {
-  pending_review: "En attente",
-  changes_requested: "Correction demandée",
-  approved: "Validé",
-  rejected: "Refusé",
-  draft: "Brouillon",
-  incomplete: "Incomplet"
-} as const;
 
 export default async function ApplicationsPage() {
   const applications = await getApplications();
@@ -27,13 +19,15 @@ export default async function ApplicationsPage() {
                   <p className="muted">Saison {application.seasonLabel}</p>
                 </div>
                 <span className="status-pill">
-                  {statusLabels[application.status as keyof typeof statusLabels] ?? application.status}
+                  {applicationStatusLabels[
+                    application.status as keyof typeof applicationStatusLabels
+                  ] ?? application.status}
                 </span>
               </div>
               <div className="check-grid">
                 <span>Règlement : {application.rulesAccepted ? "OK" : "Manquant"}</span>
-                <span>Certificat: {application.medicalCertificate ? "OK" : "Manquant"}</span>
-                <span>Paiement: {application.paymentProof ? "OK" : "Manquant"}</span>
+                <span>Certificat : {application.medicalCertificate ? "OK" : "Manquant"}</span>
+                <span>Paiement : {application.paymentProof ? "OK" : "Manquant"}</span>
               </div>
               <div className="document-links">
                 {application.medicalCertificateUrl ? (
@@ -60,16 +54,14 @@ export default async function ApplicationsPage() {
               <form action={updateApplicationStatus} className="admin-form">
                 <input name="applicationId" type="hidden" value={application.id} />
                 <select defaultValue={application.status} name="status">
-                  <option value="pending_review">En attente</option>
-                  <option value="changes_requested">Correction demandée</option>
-                  <option value="approved">Validé</option>
-                  <option value="rejected">Refusé</option>
+                  <option value="pending_review">{applicationStatusLabels.pending_review}</option>
+                  <option value="changes_requested">
+                    {applicationStatusLabels.changes_requested}
+                  </option>
+                  <option value="approved">{applicationStatusLabels.approved}</option>
+                  <option value="rejected">{applicationStatusLabels.rejected}</option>
                 </select>
-                <textarea
-                  name="reviewComment"
-                  placeholder="Commentaire bureau"
-                  rows={3}
-                />
+                <textarea name="reviewComment" placeholder="Commentaire bureau" rows={3} />
                 <button className="primary-action" type="submit">
                   Enregistrer la décision
                 </button>

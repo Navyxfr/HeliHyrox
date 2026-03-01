@@ -13,29 +13,24 @@ export default function RulesAcceptanceScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Acceptation reglement" />
+      <StackHeader title="Acceptation règlement" />
       <Text style={styles.copy}>
-        Le reglement interieur doit etre accepte explicitement pour la saison{" "}
+        Le règlement intérieur doit être accepté explicitement pour la saison{" "}
         {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
+        Statut : {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        disabled={isLoading || isAccepted}
-        label={
-          isAccepted
-            ? "Reglement deja accepte"
-            : isLoading
-              ? "Validation..."
-              : "Accepter le reglement"
-        }
+        disabled={isAccepted}
+        isLoading={isLoading}
+        label={isAccepted ? "Règlement déjà accepté" : "Accepter le règlement"}
         onPress={async () => {
           const success = await acceptRules();
 
           if (success) {
-            showToast("Reglement accepte.", "success");
+            showToast("Règlement accepté.", "success");
           }
         }}
       />

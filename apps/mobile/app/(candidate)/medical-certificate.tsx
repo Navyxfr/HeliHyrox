@@ -12,22 +12,22 @@ export default function MedicalCertificateScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Certificat medical" />
+      <StackHeader title="Certificat médical" />
       <Text style={styles.copy}>
-        Deposez votre certificat medical pour la saison {application?.seasonLabel}.
+        Déposez votre certificat médical pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
+        Statut : {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        disabled={isLoading}
-        label={isLoading ? "Envoi..." : "Choisir et envoyer un document"}
+        isLoading={isLoading}
+        label="Choisir et envoyer un document"
         onPress={async () => {
           const success = await uploadMedicalCertificate();
 
           if (success) {
-            showToast("Certificat depose.", "success");
+            showToast("Certificat déposé.", "success");
           }
         }}
       />

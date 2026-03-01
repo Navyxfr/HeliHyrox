@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
   type StyleProp,
-  type ViewStyle
+  type ViewStyle,
+  type RefreshControlProps
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/theme/tokens";
@@ -13,18 +15,23 @@ type ScreenProps = {
   children: ReactNode;
   scrollable?: boolean;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  refreshControlProps?: RefreshControlProps;
 };
 
 export function Screen({
   children,
   scrollable = false,
-  contentContainerStyle
+  contentContainerStyle,
+  refreshControlProps
 }: ScreenProps) {
   return (
     <SafeAreaView style={styles.screen}>
       {scrollable ? (
         <ScrollView
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
+          refreshControl={
+            refreshControlProps ? <RefreshControl {...refreshControlProps} /> : undefined
+          }
           showsVerticalScrollIndicator={false}
         >
           {children}

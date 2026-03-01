@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useToast } from "@/components/Toast";
 import { AppTextInput } from "@/components/ui/AppTextInput";
 import { Button } from "@/components/ui/Button";
 import { useCandidate } from "@/features/candidate/CandidateContext";
-import { colors } from "@/theme/tokens";
 
 export default function ApplicationFormScreen() {
   const { application, error, isLoading, saveProfile } = useCandidate();
@@ -17,35 +15,43 @@ export default function ApplicationFormScreen() {
 
   return (
     <Screen scrollable>
-      <StackHeader title="Dossier adhesion" />
-      <AppTextInput onChangeText={setFirstName} placeholder="Prenom" value={firstName} />
-      <AppTextInput onChangeText={setLastName} placeholder="Nom" value={lastName} />
+      <StackHeader title="Dossier adhésion" />
       <AppTextInput
+        accessibilityLabel="Prénom"
+        error={null}
+        label="Prénom"
+        onChangeText={setFirstName}
+        placeholder="Prénom"
+        value={firstName}
+      />
+      <AppTextInput
+        accessibilityLabel="Nom"
+        error={null}
+        label="Nom"
+        onChangeText={setLastName}
+        placeholder="Nom"
+        value={lastName}
+      />
+      <AppTextInput
+        accessibilityLabel="Téléphone"
+        error={error}
         keyboardType="phone-pad"
+        label="Téléphone"
         onChangeText={setPhone}
-        placeholder="Telephone"
+        placeholder="Téléphone"
         value={phone}
       />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        disabled={isLoading}
-        label={isLoading ? "Enregistrement..." : "Enregistrer le profil"}
+        isLoading={isLoading}
+        label="Enregistrer le profil"
         onPress={async () => {
           const success = await saveProfile({ firstName, lastName, phone });
 
           if (success) {
-            showToast("Profil enregistre.", "success");
+            showToast("Profil enregistré.", "success");
           }
         }}
       />
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  error: {
-    color: colors.danger,
-    fontSize: 13,
-    fontWeight: "600"
-  }
-});

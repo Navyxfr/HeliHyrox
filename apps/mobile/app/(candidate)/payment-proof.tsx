@@ -14,20 +14,20 @@ export default function PaymentProofScreen() {
     <Screen scrollable>
       <StackHeader title="Preuve de paiement" />
       <Text style={styles.copy}>
-        Deposez le justificatif de paiement pour la saison {application?.seasonLabel}.
+        Déposez le justificatif de paiement pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut : {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
+        Statut : {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        disabled={isLoading}
-        label={isLoading ? "Envoi..." : "Choisir et envoyer un justificatif"}
+        isLoading={isLoading}
+        label="Choisir et envoyer un justificatif"
         onPress={async () => {
           const success = await uploadPaymentProof();
 
           if (success) {
-            showToast("Preuve de paiement deposee.", "success");
+            showToast("Preuve de paiement déposée.", "success");
           }
         }}
       />

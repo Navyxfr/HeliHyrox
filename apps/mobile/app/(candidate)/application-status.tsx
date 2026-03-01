@@ -1,3 +1,4 @@
+import { applicationStatusLabels } from "@helihyrox/shared";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
@@ -22,34 +23,31 @@ export default function ApplicationStatusScreen() {
       <StackHeader title="Statut du dossier" />
       <View style={styles.card}>
         <Text style={styles.label}>Statut</Text>
-        <Text style={styles.value}>{application?.status ?? "inconnu"}</Text>
+        <Text style={styles.value}>
+          {application?.status ? applicationStatusLabels[application.status] : "Inconnu"}
+        </Text>
         <Text style={styles.label}>Profil</Text>
         <Text style={styles.value}>
           {application?.firstName && application?.lastName ? "complet" : "incomplet"}
         </Text>
         <Text style={styles.label}>Certificat</Text>
         <Text style={styles.value}>
-          {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
+          {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
         </Text>
-        <Text style={styles.label}>Reglement</Text>
+        <Text style={styles.label}>Règlement</Text>
         <Text style={styles.value}>
-          {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
+          {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
         </Text>
         <Text style={styles.label}>Paiement</Text>
         <Text style={styles.value}>
-          {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
+          {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
         </Text>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        disabled={isLoading || !canSubmit}
-        label={
-          isLoading
-            ? "Mise a jour..."
-            : canSubmit
-              ? "Soumettre le dossier au bureau"
-              : "Dossier incomplet"
-        }
+        disabled={!canSubmit}
+        isLoading={isLoading}
+        label={canSubmit ? "Soumettre le dossier au bureau" : "Dossier incomplet"}
         onPress={async () => {
           const success = await submitApplication();
 
