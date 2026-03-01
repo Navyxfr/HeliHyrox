@@ -1,7 +1,7 @@
 {
   "name": "@helihyrox/mobile",
   "private": true,
-  "main": "expo-router/entry",
+  "main": "index.js",
   "scripts": {
     "dev": "expo start",
     "typecheck": "tsc --noEmit"
