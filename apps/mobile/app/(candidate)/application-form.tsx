@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useCandidate } from "@/features/candidate/CandidateContext";
@@ -7,16 +8,17 @@ import { colors } from "@/theme/tokens";
 
 export default function ApplicationFormScreen() {
   const { application, error, isLoading, saveProfile } = useCandidate();
+  const { showToast } = useToast();
   const [firstName, setFirstName] = useState(application?.firstName ?? "");
   const [lastName, setLastName] = useState(application?.lastName ?? "");
   const [phone, setPhone] = useState(application?.phone ?? "");
 
   return (
-    <Screen>
-      <StackHeader title="Dossier adhesion" />
+    <Screen scrollable>
+      <StackHeader title="Dossier adhésion" />
       <TextInput
         onChangeText={setFirstName}
-        placeholder="Prenom"
+        placeholder="Prénom"
         placeholderTextColor={colors.textMuted}
         style={styles.input}
         value={firstName}
@@ -31,7 +33,7 @@ export default function ApplicationFormScreen() {
       <TextInput
         keyboardType="phone-pad"
         onChangeText={setPhone}
-        placeholder="Telephone"
+        placeholder="Téléphone"
         placeholderTextColor={colors.textMuted}
         style={styles.input}
         value={phone}
@@ -39,7 +41,12 @@ export default function ApplicationFormScreen() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
         disabled={isLoading}
-        onPress={() => void saveProfile({ firstName, lastName, phone })}
+        onPress={async () => {
+          const success = await saveProfile({ firstName, lastName, phone });
+          if (success) {
+            showToast("Profil enregistré.", "success");
+          }
+        }}
         style={[styles.button, isLoading ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>

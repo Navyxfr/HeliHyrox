@@ -31,8 +31,8 @@ type BookingContextValue = {
   isLoading: boolean;
   error: string | null;
   refreshSessions: () => Promise<void>;
-  reserveSession: (sessionId: string) => Promise<void>;
-  cancelBooking: (sessionId: string) => Promise<void>;
+  reserveSession: (sessionId: string) => Promise<boolean>;
+  cancelBooking: (sessionId: string) => Promise<boolean>;
   getSessionById: (sessionId: string) => SessionItem | null;
 };
 
@@ -114,11 +114,11 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           if (bookingError) {
             setError(bookingError.message);
             setIsLoading(false);
-            return;
+            return false;
           }
 
           await refreshSessions();
-          return;
+          return true;
         }
 
         setSessions((current) =>
@@ -132,6 +132,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
               : session
           )
         );
+        return true;
       },
       cancelBooking: async (sessionId: string) => {
         if (supabase && userId) {
@@ -144,11 +145,11 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           if (bookingError) {
             setError(bookingError.message);
             setIsLoading(false);
-            return;
+            return false;
           }
 
           await refreshSessions();
-          return;
+          return true;
         }
 
         setSessions((current) =>
@@ -162,6 +163,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
               : session
           )
         );
+        return true;
       },
       getSessionById
     };

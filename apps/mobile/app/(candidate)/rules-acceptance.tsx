@@ -1,31 +1,38 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
 export default function RulesAcceptanceScreen() {
+  const { showToast } = useToast();
   const { application, acceptRules, error, isLoading } = useCandidate();
   const isAccepted = Boolean(application?.documents.rulesAccepted);
 
   return (
-    <Screen>
-      <StackHeader title="Acceptation reglement" />
+    <Screen scrollable>
+      <StackHeader title="Acceptation règlement" />
       <Text style={styles.copy}>
-        Le reglement interieur doit etre accepte explicitement pour la saison{" "}
+        Le règlement intérieur doit être accepté explicitement pour la saison{" "}
         {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut: {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
+        Statut : {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
         disabled={isLoading || isAccepted}
-        onPress={() => void acceptRules()}
+        onPress={async () => {
+          const success = await acceptRules();
+          if (success) {
+            showToast("Règlement accepté.", "success");
+          }
+        }}
         style={[styles.button, isLoading || isAccepted ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>
-          {isAccepted ? "Reglement deja accepte" : isLoading ? "Validation..." : "Accepter le reglement"}
+          {isAccepted ? "Règlement déjà accepté" : isLoading ? "Validation..." : "Accepter le règlement"}
         </Text>
       </Pressable>
     </Screen>

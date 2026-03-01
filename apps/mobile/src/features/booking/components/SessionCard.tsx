@@ -11,7 +11,7 @@ type SessionCardProps = {
 
 export function SessionCard({
   session,
-  actionLabel = "Voir le detail",
+  actionLabel = "Voir le détail",
   href
 }: SessionCardProps) {
   const isFull = session.bookedCount >= session.capacity;
@@ -22,24 +22,14 @@ export function SessionCard({
         <View style={styles.copy}>
           <Text style={styles.title}>{session.title}</Text>
           <Text style={styles.meta}>
-            {session.dateLabel} · {session.startsAtLabel} - {session.endsAtLabel}
+            {session.dateLabel} • {session.startsAtLabel} - {session.endsAtLabel}
           </Text>
           <Text style={styles.meta}>
-            {session.location} · Coach {session.coachName}
+            {session.location} • Coach {session.coachName}
           </Text>
         </View>
-        <View
-          style={[
-            styles.badge,
-            isFull ? styles.badgeFull : undefined
-          ]}
-        >
-          <Text
-            style={[
-              styles.badgeText,
-              isFull ? styles.badgeTextFull : undefined
-            ]}
-          >
+        <View style={[styles.badge, isFull ? styles.badgeFull : undefined]}>
+          <Text style={[styles.badgeText, isFull ? styles.badgeTextFull : undefined]}>
             {session.bookedCount}/{session.capacity}
           </Text>
         </View>
@@ -83,7 +73,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     alignItems: "center",
-    backgroundColor: "#E8F7EE",
+    backgroundColor: colors.successLight,
     borderRadius: 999,
     height: 34,
     justifyContent: "center",
@@ -96,7 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   badgeFull: {
-    backgroundColor: "#FEF3C7"
+    backgroundColor: colors.warningLight
   },
   badgeTextFull: {
     color: colors.warning

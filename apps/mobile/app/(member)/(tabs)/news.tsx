@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { EmptyState } from "@/components/EmptyState";
 import { Screen } from "@/components/Screen";
 import { useMemberData } from "@/features/member/MemberDataContext";
 import { colors } from "@/theme/tokens";
@@ -15,10 +15,10 @@ export default function NewsScreen() {
         {isLoading ? <Text style={styles.meta}>Chargement...</Text> : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
         {!isLoading && news.length === 0 ? (
-          <PlaceholderPanel
+          <EmptyState
             eyebrow="MEMBER"
-            title="Aucune actualite"
-            body="Les prochaines informations de la section apparaitront ici."
+            title="Aucune actualité"
+            description="Les prochaines informations de la section apparaîtront ici."
           />
         ) : null}
         {news.map((item) => (
@@ -28,7 +28,7 @@ export default function NewsScreen() {
             <Text style={styles.meta}>{item.publishedAtLabel}</Text>
             <Link href={`/(member)/news/${item.id}`} asChild>
               <Pressable style={styles.button}>
-                <Text style={styles.buttonText}>Lire l'actualite</Text>
+                <Text style={styles.buttonText}>Lire l’actualité</Text>
               </Pressable>
             </Link>
           </View>

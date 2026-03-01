@@ -1,10 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
 export default function ApplicationStatusScreen() {
+  const { showToast } = useToast();
   const { application, error, isLoading, submitApplication } = useCandidate();
   const canSubmit = Boolean(
     application?.firstName &&
@@ -15,7 +17,7 @@ export default function ApplicationStatusScreen() {
   );
 
   return (
-    <Screen>
+    <Screen scrollable>
       <StackHeader title="Statut du dossier" />
       <View style={styles.card}>
         <Text style={styles.label}>Statut</Text>
@@ -26,26 +28,31 @@ export default function ApplicationStatusScreen() {
         </Text>
         <Text style={styles.label}>Certificat</Text>
         <Text style={styles.value}>
-          {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
+          {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
         </Text>
-        <Text style={styles.label}>Reglement</Text>
+        <Text style={styles.label}>Règlement</Text>
         <Text style={styles.value}>
-          {application?.documents.rulesAccepted ? "accepte" : "non accepte"}
+          {application?.documents.rulesAccepted ? "accepté" : "non accepté"}
         </Text>
         <Text style={styles.label}>Paiement</Text>
         <Text style={styles.value}>
-          {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
+          {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
         </Text>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
         disabled={isLoading || !canSubmit}
-        onPress={() => void submitApplication()}
+        onPress={async () => {
+          const success = await submitApplication();
+          if (success) {
+            showToast("Dossier soumis au bureau.", "success");
+          }
+        }}
         style={[styles.button, isLoading || !canSubmit ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>
           {isLoading
-            ? "Mise a jour..."
+            ? "Mise à jour..."
             : canSubmit
               ? "Soumettre le dossier au bureau"
               : "Dossier incomplet"}

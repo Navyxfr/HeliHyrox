@@ -1,27 +1,34 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
 export default function MedicalCertificateScreen() {
+  const { showToast } = useToast();
   const { application, error, isLoading, uploadMedicalCertificate } =
     useCandidate();
 
   return (
-    <Screen>
-      <StackHeader title="Certificat medical" />
+    <Screen scrollable>
+      <StackHeader title="Certificat médical" />
       <Text style={styles.copy}>
-        Depot logique du certificat medical pour la saison {application?.seasonLabel}.
+        Déposez votre certificat médical pour la saison {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut:{" "}
-        {application?.documents.medicalCertificateUploaded ? "depose" : "manquant"}
+        Statut :{" "}
+        {application?.documents.medicalCertificateUploaded ? "déposé" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
         disabled={isLoading}
-        onPress={() => void uploadMedicalCertificate()}
+        onPress={async () => {
+          const success = await uploadMedicalCertificate();
+          if (success) {
+            showToast("Certificat déposé.", "success");
+          }
+        }}
         style={[styles.button, isLoading ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>

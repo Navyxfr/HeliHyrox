@@ -1,12 +1,21 @@
 import { updateApplicationStatus } from "@/lib/actions";
 import { getApplications } from "@/lib/adminData";
 
+const statusLabels = {
+  pending_review: "En attente",
+  changes_requested: "Correction demandée",
+  approved: "Validé",
+  rejected: "Refusé",
+  draft: "Brouillon",
+  incomplete: "Incomplet"
+} as const;
+
 export default async function ApplicationsPage() {
   const applications = await getApplications();
 
   return (
     <main className="page-shell">
-      <h1 className="page-title">Demandes d'adhesion</h1>
+      <h1 className="page-title">Demandes d’adhésion</h1>
       <div className="stack">
         {applications.map(
           (application: Awaited<ReturnType<typeof getApplications>>[number]) => (
@@ -17,10 +26,12 @@ export default async function ApplicationsPage() {
                   <p className="muted">{application.contactLabel}</p>
                   <p className="muted">Saison {application.seasonLabel}</p>
                 </div>
-                <span className="status-pill">{application.status}</span>
+                <span className="status-pill">
+                  {statusLabels[application.status as keyof typeof statusLabels] ?? application.status}
+                </span>
               </div>
               <div className="check-grid">
-                <span>Reglement: {application.rulesAccepted ? "OK" : "Manquant"}</span>
+                <span>Règlement : {application.rulesAccepted ? "OK" : "Manquant"}</span>
                 <span>Certificat: {application.medicalCertificate ? "OK" : "Manquant"}</span>
                 <span>Paiement: {application.paymentProof ? "OK" : "Manquant"}</span>
               </div>
@@ -49,10 +60,10 @@ export default async function ApplicationsPage() {
               <form action={updateApplicationStatus} className="admin-form">
                 <input name="applicationId" type="hidden" value={application.id} />
                 <select defaultValue={application.status} name="status">
-                  <option value="pending_review">pending_review</option>
-                  <option value="changes_requested">changes_requested</option>
-                  <option value="approved">approved</option>
-                  <option value="rejected">rejected</option>
+                  <option value="pending_review">En attente</option>
+                  <option value="changes_requested">Correction demandée</option>
+                  <option value="approved">Validé</option>
+                  <option value="rejected">Refusé</option>
                 </select>
                 <textarea
                   name="reviewComment"
@@ -60,7 +71,7 @@ export default async function ApplicationsPage() {
                   rows={3}
                 />
                 <button className="primary-action" type="submit">
-                  Enregistrer la decision
+                  Enregistrer la décision
                 </button>
               </form>
             </section>

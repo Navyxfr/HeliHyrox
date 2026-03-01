@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { CandidateStepper } from "@/features/candidate/components/CandidateStepper";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { Screen } from "@/components/Screen";
@@ -11,65 +11,61 @@ export default function CandidateDashboardScreen() {
   const { application, error, isLoading } = useCandidate();
 
   return (
-    <Screen>
-      <PlaceholderPanel
-        eyebrow="CANDIDATE"
-        title="CandidateDashboard"
-        body={`Base du parcours candidat: profil, certificat de saison, reglement, paiement et statut du dossier.${email ? ` Compte: ${email}.` : ""}${application ? ` Saison: ${application.seasonLabel}. Statut: ${application.status}.` : ""}`}
-      />
+    <Screen scrollable>
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Candidat</Text>
+        <Text style={styles.title}>Mon dossier d’adhésion</Text>
+        <Text style={styles.body}>
+          {email ? `Compte ${email}. ` : ""}
+          {application
+            ? `Saison ${application.seasonLabel}, statut actuel : ${application.status}.`
+            : "Complétez chaque étape pour soumettre votre dossier au bureau."}
+        </Text>
+      </View>
       {isLoading ? <Text style={styles.meta}>Chargement du dossier...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
+      {application ? <CandidateStepper application={application} /> : null}
       <View style={styles.actions}>
-        <Link href="/(candidate)/application-form" asChild>
-          <Pressable style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>Completer le dossier</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(candidate)/medical-certificate" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Certificat medical</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(candidate)/rules" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Consulter le reglement</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(candidate)/payment-info" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Voir les infos paiement</Text>
-          </Pressable>
-        </Link>
         <Link href="/(candidate)/application-status" asChild>
           <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Suivre le dossier</Text>
+            <Text style={styles.secondaryButtonText}>Voir le récapitulatif du dossier</Text>
           </Pressable>
         </Link>
-        <Link href="/(candidate)/pending" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Voir le statut pending</Text>
-          </Pressable>
-        </Link>
+        {application?.status === "pending_review" ? (
+          <Link href="/(candidate)/pending" asChild>
+            <Pressable style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Suivre la validation du bureau</Text>
+            </Pressable>
+          </Link>
+        ) : null}
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    gap: 8
+  },
+  eyebrow: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase"
+  },
+  title: {
+    color: colors.primary,
+    fontSize: 28,
+    fontWeight: "800"
+  },
+  body: {
+    color: colors.text,
+    fontSize: 15,
+    lineHeight: 22
+  },
   actions: {
     gap: 12
-  },
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   },
   secondaryButton: {
     backgroundColor: colors.surface,

@@ -84,17 +84,17 @@ function mapApplicationStatusLabel(status?: string | null) {
     case "pending_review":
       return "Dossier en attente";
     case "changes_requested":
-      return "Correction demandee";
+      return "Correction demandée";
     case "approved":
-      return "Adhesion active";
+      return "Adhésion active";
     case "rejected":
-      return "Dossier refuse";
+      return "Dossier refusé";
     case "incomplete":
       return "Dossier incomplet";
     case "draft":
       return "Dossier en cours";
     default:
-      return "Adhesion active";
+      return "Adhésion active";
   }
 }
 
@@ -212,7 +212,7 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    let certificateStatusLabel = "A fournir";
+    let certificateStatusLabel = "À fournir";
 
     if (applicationResult.data?.id) {
       const documentsResult = await supabase
@@ -230,8 +230,8 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
         (document) =>
           document.document_type === "medical_certificate" && document.status !== "rejected"
       )
-        ? "Certificat recu"
-        : "A fournir";
+        ? "Certificat reçu"
+        : "À fournir";
     }
 
     setNews(
@@ -273,7 +273,7 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
       certificateStatusLabel,
       dossierStatusLabel:
         membershipResult.data?.status === "active"
-          ? "Adhesion active"
+          ? "Adhésion active"
           : mapApplicationStatusLabel(applicationResult.data?.status),
       seasonEndsAtLabel: formatDateLabel(activeSeason.ends_at)
     });

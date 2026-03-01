@@ -1,26 +1,33 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { useCandidate } from "@/features/candidate/CandidateContext";
 import { colors } from "@/theme/tokens";
 
 export default function PaymentProofScreen() {
+  const { showToast } = useToast();
   const { application, error, isLoading, uploadPaymentProof } = useCandidate();
 
   return (
-    <Screen>
+    <Screen scrollable>
       <StackHeader title="Preuve de paiement" />
       <Text style={styles.copy}>
-        Depot logique du justificatif de paiement pour la saison{" "}
+        Déposez le justificatif de paiement pour la saison{" "}
         {application?.seasonLabel}.
       </Text>
       <Text style={styles.meta}>
-        Statut: {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
+        Statut : {application?.documents.paymentProofUploaded ? "déposé" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
         disabled={isLoading}
-        onPress={() => void uploadPaymentProof()}
+        onPress={async () => {
+          const success = await uploadPaymentProof();
+          if (success) {
+            showToast("Preuve de paiement déposée.", "success");
+          }
+        }}
         style={[styles.button, isLoading ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>

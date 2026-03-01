@@ -1,6 +1,5 @@
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { useAuth } from "@/features/auth/AuthContext";
@@ -18,11 +17,11 @@ export default function RegisterScreen() {
     <Screen>
       <PlaceholderPanel
         eyebrow="AUTH"
-        title="Register"
+        title="Créer un compte"
         body={
           isSupabaseEnabled
-            ? "Creation de compte publique prete a etre branchee sur Supabase Auth."
-            : "Creation de compte publique en placeholder. Le flux continue vers une verification email mockee."
+            ? "Création de compte publique prête à être branchée sur Supabase Auth."
+            : "Création de compte publique en mode démonstration. Le flux continue vers une vérification email simulée."
         }
       />
       {isSupabaseEnabled ? (
@@ -56,16 +55,18 @@ export default function RegisterScreen() {
             style={styles.primaryButton}
           >
             <Text style={styles.primaryButtonText}>
-              {isLoading ? "Creation..." : "Creer un compte"}
+              {isLoading ? "Création..." : "Créer un compte"}
             </Text>
           </Pressable>
         </>
       ) : null}
-      <Link href="/(auth)/verify-email" asChild>
-        <Pressable style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>Simuler inscription</Text>
-        </Pressable>
-      </Link>
+      {!isSupabaseEnabled ? (
+        <Link href="/(auth)/verify-email" asChild>
+          <Pressable style={styles.primaryButton}>
+            <Text style={styles.primaryButtonText}>Simuler l’inscription</Text>
+          </Pressable>
+        </Link>
+      ) : null}
     </Screen>
   );
 }

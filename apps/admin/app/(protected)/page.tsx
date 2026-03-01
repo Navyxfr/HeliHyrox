@@ -3,18 +3,18 @@ import Link from "next/link";
 const adminSections = [
   {
     href: "/applications",
-    title: "Demandes d'adhesion",
+    title: "Demandes d’adhésion",
     copy: "Valider, refuser ou demander une correction sur les dossiers."
   },
   {
     href: "/sessions",
-    title: "Seances",
-    copy: "Creer et suivre les seances de la saison active."
+    title: "Séances",
+    copy: "Créer et suivre les séances de la saison active."
   },
   {
     href: "/news",
-    title: "Actualites",
-    copy: "Publier les actus de la section et des evenements."
+    title: "Actualités",
+    copy: "Publier les actus de la section et des événements."
   }
 ] as const;
 
@@ -25,7 +25,7 @@ export default function AdminHomePage() {
         <p className="eyebrow">BUREAU HELIHYROX</p>
         <h1>Back-office admin</h1>
         <p className="hero-copy">
-          Back-office bureau relie aux donnees reelles quand Supabase admin est configure.
+          Back-office bureau relié aux données réelles quand Supabase admin est configuré.
         </p>
       </section>
 

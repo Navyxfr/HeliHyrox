@@ -25,11 +25,11 @@ type CandidateContextValue = {
     firstName: string;
     lastName: string;
     phone: string;
-  }) => Promise<void>;
-  acceptRules: () => Promise<void>;
-  uploadMedicalCertificate: () => Promise<void>;
-  uploadPaymentProof: () => Promise<void>;
-  submitApplication: () => Promise<void>;
+  }) => Promise<boolean>;
+  acceptRules: () => Promise<boolean>;
+  uploadMedicalCertificate: () => Promise<boolean>;
+  uploadPaymentProof: () => Promise<boolean>;
+  submitApplication: () => Promise<boolean>;
 };
 
 const CandidateContext = createContext<CandidateContextValue | null>(null);
@@ -200,13 +200,13 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
   const uploadDocument = useCallback(
     async (documentType: "medical_certificate" | "payment_proof") => {
       if (!application) {
-        return;
+        return false;
       }
 
       const pickedDocument = await pickSingleDocument();
 
       if (!pickedDocument) {
-        return;
+        return false;
       }
 
       if (!supabase || !userId) {
@@ -228,7 +228,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
               }
             : current
         );
-        return;
+        return true;
       }
 
       setIsLoading(true);
@@ -244,7 +244,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
       if (applicationRow.error) {
         setError(applicationRow.error.message);
         setIsLoading(false);
-        return;
+        return false;
       }
 
       const extension =
@@ -273,7 +273,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         if (storageError) {
           setError(storageError.message);
           setIsLoading(false);
-          return;
+          return false;
         }
 
         const { error: docError } = await supabase.from("application_documents").upsert(
@@ -289,15 +289,17 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         if (docError) {
           setError(docError.message);
           setIsLoading(false);
-          return;
+          return false;
         }
 
         await refreshApplication();
+        return true;
       } catch (uploadError) {
         setError(
           uploadError instanceof Error ? uploadError.message : "Echec de l'envoi du document."
         );
         setIsLoading(false);
+        return false;
       }
     },
     [application, refreshApplication, userId]
@@ -326,7 +328,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
                 }
               : current
           );
-          return;
+          return true;
         }
 
         setIsLoading(true);
@@ -346,14 +348,15 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         if (profileError) {
           setError(profileError.message);
           setIsLoading(false);
-          return;
+          return false;
         }
 
         await refreshApplication();
+        return true;
       },
       acceptRules: async () => {
         if (!application) {
-          return;
+          return false;
         }
 
         if (!supabase || !userId) {
@@ -365,7 +368,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
                 }
               : current
           );
-          return;
+          return true;
         }
 
         setIsLoading(true);
@@ -379,20 +382,21 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         if (applicationError) {
           setError(applicationError.message);
           setIsLoading(false);
-          return;
+          return false;
         }
 
         await refreshApplication();
+        return true;
       },
       uploadMedicalCertificate: async () => {
-        await uploadDocument("medical_certificate");
+        return uploadDocument("medical_certificate");
       },
       uploadPaymentProof: async () => {
-        await uploadDocument("payment_proof");
+        return uploadDocument("payment_proof");
       },
       submitApplication: async () => {
         if (!application) {
-          return;
+          return false;
         }
 
         const nextStatus = deriveApplicationStatus({
@@ -405,7 +409,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
 
         if (nextStatus !== "pending_review") {
           setError("Le dossier doit etre complet avant soumission au bureau.");
-          return;
+          return false;
         }
 
         if (!supabase || !userId) {
@@ -417,7 +421,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
                 }
               : current
           );
-          return;
+          return true;
         }
 
         setIsLoading(true);
@@ -435,10 +439,11 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         if (submitError) {
           setError(submitError.message);
           setIsLoading(false);
-          return;
+          return false;
         }
 
         await refreshApplication();
+        return true;
       }
     }),
     [application, error, isLoading, isSupabaseEnabled, refreshApplication, uploadDocument, userId]
