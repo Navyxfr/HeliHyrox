@@ -8,7 +8,8 @@ import { colors } from "@/theme/tokens";
 
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { cancelBooking, getSessionById, reserveSession } = useBooking();
+  const { cancelBooking, error, getSessionById, isLoading, reserveSession } =
+    useBooking();
   const session = getSessionById(id);
 
   if (!session) {
@@ -32,6 +33,7 @@ export default function SessionDetailScreen() {
         body={`${session.title} · ${session.dateLabel} · ${session.startsAtLabel} - ${session.endsAtLabel}`}
       />
       <View style={styles.card}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         <Text style={styles.label}>Lieu</Text>
         <Text style={styles.value}>{session.location}</Text>
         <Text style={styles.label}>Coach</Text>
@@ -44,7 +46,9 @@ export default function SessionDetailScreen() {
         <Text style={styles.value}>{session.sessionType}</Text>
         <Pressable
           onPress={() =>
-            session.isBooked ? cancelBooking(session.id) : reserveSession(session.id)
+            void (session.isBooked
+              ? cancelBooking(session.id)
+              : reserveSession(session.id))
           }
           style={session.isBooked ? styles.secondaryButton : styles.primaryButton}
         >
@@ -53,7 +57,11 @@ export default function SessionDetailScreen() {
               session.isBooked ? styles.secondaryButtonText : styles.primaryButtonText
             }
           >
-            {session.isBooked ? "Annuler la reservation" : "Reserver la seance"}
+            {isLoading
+              ? "Traitement..."
+              : session.isBooked
+                ? "Annuler la reservation"
+                : "Reserver la seance"}
           </Text>
         </Pressable>
       </View>
@@ -82,6 +90,11 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 15,
     lineHeight: 22
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   },
   primaryButton: {
     backgroundColor: colors.accent,

@@ -4,6 +4,8 @@ export type SessionItem = {
   id: string;
   title: string;
   sessionType: SessionType;
+  startsAtIso?: string;
+  endsAtIso?: string;
   startsAtLabel: string;
   endsAtLabel: string;
   dateLabel: string;

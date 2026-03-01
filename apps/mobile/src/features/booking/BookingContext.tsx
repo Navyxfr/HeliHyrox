@@ -1,11 +1,29 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { supabase } from "@/services/supabase";
+import { formatDateLabel, formatTimeLabel } from "@/features/booking/formatters";
 import { mockSessions, type SessionItem } from "@/features/booking/mockData";
+
+type SessionRpcRow = {
+  id: string;
+  title: string;
+  session_type: SessionItem["sessionType"];
+  starts_at: string;
+  ends_at: string;
+  location: string | null;
+  capacity: number;
+  booked_count: number | string;
+  user_booked: boolean;
+  coach_name: string;
+};
 
 type BookingContextValue = {
   sessions: SessionItem[];
   myBookings: SessionItem[];
-  reserveSession: (sessionId: string) => void;
-  cancelBooking: (sessionId: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  refreshSessions: () => Promise<void>;
+  reserveSession: (sessionId: string) => Promise<void>;
+  cancelBooking: (sessionId: string) => Promise<void>;
   getSessionById: (sessionId: string) => SessionItem | null;
 };
 
@@ -13,15 +31,99 @@ const BookingContext = createContext<BookingContextValue | null>(null);
 
 export function BookingProvider({ children }: { children: ReactNode }) {
   const [sessions, setSessions] = useState(mockSessions);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function mapRpcSession(session: SessionRpcRow): SessionItem {
+    return {
+      id: session.id,
+      title: session.title,
+      sessionType: session.session_type,
+      startsAtIso: session.starts_at,
+      endsAtIso: session.ends_at,
+      startsAtLabel: formatTimeLabel(session.starts_at),
+      endsAtLabel: formatTimeLabel(session.ends_at),
+      dateLabel: formatDateLabel(session.starts_at),
+      location: session.location ?? "Lieu a definir",
+      capacity: session.capacity,
+      bookedCount: Number(session.booked_count),
+      coachName: session.coach_name,
+      isBooked: session.user_booked
+    };
+  }
+
+  useEffect(() => {
+    async function load() {
+      if (!supabase) {
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      const { data, error: sessionsError } = await supabase.rpc("get_member_sessions");
+
+      if (sessionsError) {
+        setError(sessionsError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
+      setIsLoading(false);
+    }
+
+    void load();
+  }, []);
 
   const value = useMemo<BookingContextValue>(() => {
     const getSessionById = (sessionId: string) =>
       sessions.find((session) => session.id === sessionId) ?? null;
 
+    const refreshSessions = async () => {
+      if (!supabase) {
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      const { data, error: sessionsError } = await supabase.rpc("get_member_sessions");
+
+      if (sessionsError) {
+        setError(sessionsError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setSessions(((data ?? []) as SessionRpcRow[]).map(mapRpcSession));
+      setIsLoading(false);
+    };
+
     return {
       sessions,
       myBookings: sessions.filter((session) => session.isBooked),
-      reserveSession: (sessionId: string) => {
+      isLoading,
+      error,
+      refreshSessions,
+      reserveSession: async (sessionId: string) => {
+        if (supabase) {
+          setIsLoading(true);
+          setError(null);
+          const { error: bookingError } = await supabase.rpc("book_session", {
+            target_session_id: sessionId
+          });
+
+          if (bookingError) {
+            setError(bookingError.message);
+            setIsLoading(false);
+            return;
+          }
+
+          await refreshSessions();
+          return;
+        }
+
         setSessions((current) =>
           current.map((session) =>
             session.id === sessionId && !session.isBooked
@@ -34,7 +136,24 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           )
         );
       },
-      cancelBooking: (sessionId: string) => {
+      cancelBooking: async (sessionId: string) => {
+        if (supabase) {
+          setIsLoading(true);
+          setError(null);
+          const { error: bookingError } = await supabase.rpc("cancel_booking", {
+            target_session_id: sessionId
+          });
+
+          if (bookingError) {
+            setError(bookingError.message);
+            setIsLoading(false);
+            return;
+          }
+
+          await refreshSessions();
+          return;
+        }
+
         setSessions((current) =>
           current.map((session) =>
             session.id === sessionId && session.isBooked
@@ -49,7 +168,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       },
       getSessionById
     };
-  }, [sessions]);
+  }, [error, isLoading, sessions]);
 
   return (
     <BookingContext.Provider value={value}>{children}</BookingContext.Provider>
