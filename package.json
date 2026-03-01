@@ -1,0 +1,14 @@
+{
+  "name": "helihyrox",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:mobile": "npm --workspace @helihyrox/mobile run dev",
+    "dev:admin": "npm --workspace @helihyrox/admin run dev",
+    "typecheck:mobile": "npm --workspace @helihyrox/mobile run typecheck",
+    "typecheck:admin": "npm --workspace @helihyrox/admin run typecheck"
+  }
+}

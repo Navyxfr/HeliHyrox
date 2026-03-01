@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+.next/
+dist/
+build/
+coverage/
+*.log
+.env
+.env.local
+.env.*.local
+
