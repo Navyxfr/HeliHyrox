@@ -2,19 +2,23 @@ import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { useAuth } from "@/features/auth/AuthContext";
+import { useCandidate } from "@/features/candidate/CandidateContext";
 import { Screen } from "@/components/Screen";
 import { colors } from "@/theme/tokens";
 
 export default function CandidateDashboardScreen() {
   const { email } = useAuth();
+  const { application, error, isLoading } = useCandidate();
 
   return (
     <Screen>
       <PlaceholderPanel
         eyebrow="CANDIDATE"
         title="CandidateDashboard"
-        body={`Base du parcours candidat: profil, certificat de saison, reglement, paiement et statut du dossier.${email ? ` Compte: ${email}.` : ""}`}
+        body={`Base du parcours candidat: profil, certificat de saison, reglement, paiement et statut du dossier.${email ? ` Compte: ${email}.` : ""}${application ? ` Saison: ${application.seasonLabel}. Statut: ${application.status}.` : ""}`}
       />
+      {isLoading ? <Text style={styles.meta}>Chargement du dossier...</Text> : null}
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       <View style={styles.actions}>
         <Link href="/(candidate)/application-form" asChild>
           <Pressable style={styles.primaryButton}>
@@ -80,5 +84,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center"
+  },
+  meta: {
+    color: colors.textMuted,
+    fontSize: 13
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   }
 });

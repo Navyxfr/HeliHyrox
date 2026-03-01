@@ -19,12 +19,14 @@ import { deriveStatusFromData } from "@/features/auth/deriveStatus";
 import { supabase } from "@/services/supabase";
 
 type MockSession = {
+  userId: string | null;
   derivedStatus: DerivedStatus;
   roles: UserRole[];
   email: string | null;
 };
 
 type AuthContextValue = {
+  userId: string | null;
   derivedStatus: DerivedStatus;
   roles: UserRole[];
   email: string | null;
@@ -105,6 +107,7 @@ function canAccessPath(
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [mockSession, setMockSession] = useState<MockSession>({
+    userId: null,
     derivedStatus: "public",
     roles: [],
     email: null
@@ -173,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             : [];
 
       setMockSession({
+        userId,
         derivedStatus,
         roles,
         email: userEmail
@@ -228,6 +232,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session?.user) {
         setMockSession({
+          userId: null,
           derivedStatus: "public",
           roles: [],
           email: null
@@ -243,6 +248,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(
     () => ({
+      userId: mockSession.userId,
       derivedStatus: mockSession.derivedStatus,
       roles: mockSession.roles,
       email: mockSession.email,
@@ -275,6 +281,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         const nextSession: MockSession = {
+          userId: "mock-user",
           derivedStatus: status,
           roles,
           email: getDefaultEmail(status)
@@ -292,6 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         setMockSession({
+          userId: null,
           derivedStatus: "public",
           roles: [],
           email: null
