@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
+import { BookingProvider } from "@/features/booking/BookingContext";
 
 export default function MemberLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <BookingProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </BookingProvider>
+  );
 }
-

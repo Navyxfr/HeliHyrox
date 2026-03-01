@@ -1,13 +1,14 @@
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
-import { getSessionById } from "@/features/booking/mockData";
+import { useBooking } from "@/features/booking/BookingContext";
 import { colors } from "@/theme/tokens";
 
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { cancelBooking, getSessionById, reserveSession } = useBooking();
   const session = getSessionById(id);
 
   if (!session) {
@@ -41,6 +42,20 @@ export default function SessionDetailScreen() {
         </Text>
         <Text style={styles.label}>Type</Text>
         <Text style={styles.value}>{session.sessionType}</Text>
+        <Pressable
+          onPress={() =>
+            session.isBooked ? cancelBooking(session.id) : reserveSession(session.id)
+          }
+          style={session.isBooked ? styles.secondaryButton : styles.primaryButton}
+        >
+          <Text
+            style={
+              session.isBooked ? styles.secondaryButtonText : styles.primaryButtonText
+            }
+          >
+            {session.isBooked ? "Annuler la reservation" : "Reserver la seance"}
+          </Text>
+        </Pressable>
       </View>
     </Screen>
   );
@@ -67,5 +82,33 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 15,
     lineHeight: 22
+  },
+  primaryButton: {
+    backgroundColor: colors.accent,
+    borderRadius: 16,
+    marginTop: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 16
+  },
+  primaryButtonText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: "700",
+    textAlign: "center"
+  },
+  secondaryButton: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginTop: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 16
+  },
+  secondaryButtonText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: "600",
+    textAlign: "center"
   }
 });

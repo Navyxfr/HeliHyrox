@@ -2,10 +2,12 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
 import { SessionCard } from "@/features/booking/components/SessionCard";
-import { myBookings } from "@/features/booking/mockData";
+import { useBooking } from "@/features/booking/BookingContext";
 import { colors } from "@/theme/tokens";
 
 export default function MyBookingsScreen() {
+  const { myBookings } = useBooking();
+
   return (
     <Screen>
       <StackHeader title="Mes reservations" />
