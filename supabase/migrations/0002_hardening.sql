@@ -23,12 +23,21 @@ create type public.notification_type as enum (
 );
 
 alter table public.news_posts
+  alter column visibility drop default;
+
+alter table public.news_posts
   alter column visibility type public.visibility_level
   using visibility::public.visibility_level;
+
+alter table public.news_posts
+  alter column visibility set default 'members'::public.visibility_level;
 
 alter table public.sessions
   alter column session_type type public.session_type
   using session_type::public.session_type;
+
+alter table public.notifications
+  alter column type drop default;
 
 alter table public.notifications
   alter column type type public.notification_type
