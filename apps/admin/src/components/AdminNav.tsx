@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOutAdmin } from "@/lib/authActions";
 
 const links = [
   { href: "/", label: "Dashboard" },
@@ -15,6 +16,11 @@ export function AdminNav() {
           {link.label}
         </Link>
       ))}
+      <form action={signOutAdmin}>
+        <button className="nav-link nav-button" type="submit">
+          Deconnexion
+        </button>
+      </form>
     </nav>
   );
 }
