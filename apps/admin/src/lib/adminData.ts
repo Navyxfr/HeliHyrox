@@ -1,8 +1,10 @@
 import { mockApplications, mockNewsPosts, mockSessions } from "@/lib/mockData";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { requireAdminUser } from "@/lib/adminAuth";
+import { getSupabaseServer } from "@/lib/supabaseServer";
 
 export async function getApplications() {
-  const supabase = getSupabaseAdmin();
+  await requireAdminUser();
+  const supabase = await getSupabaseServer();
 
   if (!supabase) {
     return mockApplications;
@@ -16,7 +18,6 @@ export async function getApplications() {
       user_id,
       status,
       rules_accepted_at,
-      profiles:profiles!inner(first_name, last_name),
       season:seasons!inner(label),
       documents:application_documents(document_type, status)
     `
@@ -27,10 +28,24 @@ export async function getApplications() {
     return mockApplications;
   }
 
+  const userIds = [...new Set(data.map((row) => row.user_id))];
+  const { data: profiles } = userIds.length
+    ? await supabase
+        .from("profiles")
+        .select("user_id, first_name, last_name")
+        .in("user_id", userIds)
+    : { data: [] as Array<{ user_id: string; first_name: string; last_name: string }> };
+
+  const profilesByUserId = new Map(
+    (profiles ?? []).map((profile) => [profile.user_id, profile])
+  );
+
   return data.map((row: any) => ({
     id: row.id,
-    applicantName: `${row.profiles.first_name} ${row.profiles.last_name}`.trim(),
-    email: row.user_id,
+    applicantName: `${profilesByUserId.get(row.user_id)?.first_name ?? ""} ${
+      profilesByUserId.get(row.user_id)?.last_name ?? ""
+    }`.trim() || "Profil incomplet",
+    email: `Compte ${row.user_id.slice(0, 8)}`,
     status: row.status,
     seasonLabel: row.season.label,
     rulesAccepted: Boolean(row.rules_accepted_at),
@@ -44,7 +59,8 @@ export async function getApplications() {
 }
 
 export async function getNewsPosts() {
-  const supabase = getSupabaseAdmin();
+  await requireAdminUser();
+  const supabase = await getSupabaseServer();
 
   if (!supabase) {
     return mockNewsPosts;
@@ -68,7 +84,8 @@ export async function getNewsPosts() {
 }
 
 export async function getSessions() {
-  const supabase = getSupabaseAdmin();
+  await requireAdminUser();
+  const supabase = await getSupabaseServer();
 
   if (!supabase) {
     return mockSessions;
