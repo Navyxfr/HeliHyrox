@@ -1,6 +1,12 @@
 import { signInAdmin } from "@/lib/authActions";
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams
+}: {
+  searchParams?: { error?: string };
+}) {
+  const errorMessage = searchParams?.error ?? null;
+
   return (
     <main className="page-shell auth-shell">
       <section className="hero-card">
@@ -13,6 +19,7 @@ export default function LoginPage() {
 
       <section className="panel auth-panel">
         <form action={signInAdmin} className="admin-form">
+          {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
           <input name="email" placeholder="Email" required type="email" />
           <input name="password" placeholder="Mot de passe" required type="password" />
           <button className="primary-action" type="submit">

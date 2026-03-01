@@ -30,6 +30,19 @@ type MovementOption = {
   unit: string;
 };
 
+type RecordRow = {
+  id: string;
+  value: number | string;
+  value_label: string;
+  performed_on: string;
+  movement: Array<{
+    id: string;
+    key: string;
+    label: string;
+    unit: string;
+  }>;
+};
+
 type MembershipSummary = {
   seasonLabel: string;
   membershipFeeLabel: string;
@@ -232,15 +245,17 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
     );
 
     setRecords(
-      (recordsResult.data ?? []).map((record: any) => ({
-        id: record.id,
-        movementId: record.movement.id,
-        movement: record.movement.label,
-        value: Number(record.value),
-        valueLabel: record.value_label,
-        performedOn: record.performed_on,
-        performedOnLabel: formatDateLabel(record.performed_on)
-      }))
+      ((recordsResult.data ?? []) as RecordRow[])
+        .filter((record) => record.movement[0])
+        .map((record) => ({
+          id: record.id,
+          movementId: record.movement[0].id,
+          movement: record.movement[0].label,
+          value: Number(record.value),
+          valueLabel: record.value_label,
+          performedOn: record.performed_on,
+          performedOnLabel: formatDateLabel(record.performed_on)
+        }))
     );
 
     setMovements(

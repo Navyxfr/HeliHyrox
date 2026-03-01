@@ -14,7 +14,7 @@ export default async function ApplicationsPage() {
               <div className="row-between">
                 <div>
                   <h2>{application.applicantName}</h2>
-                  <p className="muted">{application.email}</p>
+                  <p className="muted">{application.contactLabel}</p>
                   <p className="muted">Saison {application.seasonLabel}</p>
                 </div>
                 <span className="status-pill">{application.status}</span>
@@ -23,6 +23,28 @@ export default async function ApplicationsPage() {
                 <span>Reglement: {application.rulesAccepted ? "OK" : "Manquant"}</span>
                 <span>Certificat: {application.medicalCertificate ? "OK" : "Manquant"}</span>
                 <span>Paiement: {application.paymentProof ? "OK" : "Manquant"}</span>
+              </div>
+              <div className="document-links">
+                {application.medicalCertificateUrl ? (
+                  <a
+                    className="nav-link"
+                    href={application.medicalCertificateUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Voir le certificat
+                  </a>
+                ) : null}
+                {application.paymentProofUrl ? (
+                  <a
+                    className="nav-link"
+                    href={application.paymentProofUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Voir la preuve de paiement
+                  </a>
+                ) : null}
               </div>
               <form action={updateApplicationStatus} className="admin-form">
                 <input name="applicationId" type="hidden" value={application.id} />

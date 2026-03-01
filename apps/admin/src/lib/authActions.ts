@@ -17,7 +17,7 @@ export async function signInAdmin(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect("/login" as Route);
+    redirect(`/login?error=${encodeURIComponent("Identifiants invalides.")}` as Route);
   }
 
   redirect("/" as Route);
