@@ -20,11 +20,12 @@ export default function MedicalCertificateScreen() {
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Pressable
+        disabled={isLoading}
         onPress={() => void uploadMedicalCertificate()}
-        style={styles.button}
+        style={[styles.button, isLoading ? styles.buttonDisabled : null]}
       >
         <Text style={styles.buttonText}>
-          {isLoading ? "Envoi..." : "Marquer comme depose"}
+          {isLoading ? "Envoi..." : "Choisir et envoyer un document"}
         </Text>
       </Pressable>
     </Screen>
@@ -46,6 +47,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   buttonText: {
     color: colors.primary,

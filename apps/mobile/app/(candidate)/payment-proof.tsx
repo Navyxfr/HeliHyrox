@@ -18,9 +18,13 @@ export default function PaymentProofScreen() {
         Statut: {application?.documents.paymentProofUploaded ? "depose" : "manquant"}
       </Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable onPress={() => void uploadPaymentProof()} style={styles.button}>
+      <Pressable
+        disabled={isLoading}
+        onPress={() => void uploadPaymentProof()}
+        style={[styles.button, isLoading ? styles.buttonDisabled : null]}
+      >
         <Text style={styles.buttonText}>
-          {isLoading ? "Envoi..." : "Marquer comme depose"}
+          {isLoading ? "Envoi..." : "Choisir et envoyer un justificatif"}
         </Text>
       </Pressable>
     </Screen>
@@ -42,6 +46,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 18,
     paddingVertical: 16
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   buttonText: {
     color: colors.primary,

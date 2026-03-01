@@ -1,4 +1,5 @@
 import type { ApplicationStatus } from "@helihyrox/shared";
+import * as DocumentPicker from "expo-document-picker";
 import {
   createContext,
   ReactNode,
@@ -32,6 +33,20 @@ type CandidateContextValue = {
 };
 
 const CandidateContext = createContext<CandidateContextValue | null>(null);
+
+async function pickSingleDocument() {
+  const result = await DocumentPicker.getDocumentAsync({
+    copyToCacheDirectory: true,
+    multiple: false,
+    type: ["application/pdf", "image/*"]
+  });
+
+  if (result.canceled || !result.assets?.length) {
+    return null;
+  }
+
+  return result.assets[0];
+}
 
 function deriveApplicationStatus(input: {
   currentStatus?: ApplicationStatus;
@@ -182,6 +197,109 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, [isSupabaseEnabled, userId]);
 
+  const uploadDocument = useCallback(
+    async (documentType: "medical_certificate" | "payment_proof") => {
+      if (!application) {
+        return;
+      }
+
+      const pickedDocument = await pickSingleDocument();
+
+      if (!pickedDocument) {
+        return;
+      }
+
+      if (!supabase || !userId) {
+        setApplication((current) =>
+          current
+            ? {
+                ...current,
+                documents: {
+                  ...current.documents,
+                  medicalCertificateUploaded:
+                    documentType === "medical_certificate"
+                      ? true
+                      : current.documents.medicalCertificateUploaded,
+                  paymentProofUploaded:
+                    documentType === "payment_proof"
+                      ? true
+                      : current.documents.paymentProofUploaded
+                }
+              }
+            : current
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      const applicationRow = await supabase
+        .from("membership_applications")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("season_id", application.seasonId)
+        .single();
+
+      if (applicationRow.error) {
+        setError(applicationRow.error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      const extension =
+        pickedDocument.name?.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ||
+        (pickedDocument.mimeType === "application/pdf" ? "pdf" : "jpg");
+      const baseName =
+        documentType === "medical_certificate"
+          ? "medical-certificate"
+          : "payment-proof";
+      const storagePath = `memberships/${application.seasonId}/${userId}/${baseName}.${extension}`;
+
+      try {
+        const response = await fetch(pickedDocument.uri);
+        const arrayBuffer = await response.arrayBuffer();
+
+        const { error: storageError } = await supabase.storage
+          .from("membership-documents")
+          .upload(storagePath, arrayBuffer, {
+            contentType: pickedDocument.mimeType ?? undefined,
+            upsert: true
+          });
+
+        if (storageError) {
+          setError(storageError.message);
+          setIsLoading(false);
+          return;
+        }
+
+        const { error: docError } = await supabase.from("application_documents").upsert(
+          {
+            application_id: applicationRow.data.id,
+            document_type: documentType,
+            storage_path: storagePath,
+            status: "uploaded"
+          },
+          { onConflict: "application_id,document_type" }
+        );
+
+        if (docError) {
+          setError(docError.message);
+          setIsLoading(false);
+          return;
+        }
+
+        await refreshApplication();
+      } catch (uploadError) {
+        setError(
+          uploadError instanceof Error ? uploadError.message : "Echec de l'envoi du document."
+        );
+        setIsLoading(false);
+      }
+    },
+    [application, refreshApplication, userId]
+  );
+
   useEffect(() => {
     void refreshApplication();
   }, [refreshApplication]);
@@ -264,104 +382,10 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         await refreshApplication();
       },
       uploadMedicalCertificate: async () => {
-        if (!application) {
-          return;
-        }
-
-        if (!supabase || !userId) {
-          setApplication((current) =>
-            current
-              ? {
-                  ...current,
-                  documents: { ...current.documents, medicalCertificateUploaded: true }
-                }
-              : current
-          );
-          return;
-        }
-
-        setIsLoading(true);
-        setError(null);
-        const applicationRow = await supabase
-          .from("membership_applications")
-          .select("id")
-          .eq("user_id", userId)
-          .eq("season_id", application.seasonId)
-          .single();
-
-        if (applicationRow.error) {
-          setError(applicationRow.error.message);
-          setIsLoading(false);
-          return;
-        }
-
-        const { error: docError } = await supabase.from("application_documents").upsert(
-          {
-            application_id: applicationRow.data.id,
-            document_type: "medical_certificate",
-            storage_path: `membership-documents/${application.seasonId}/${userId}/medical-certificate-placeholder.pdf`,
-            status: "uploaded"
-          },
-          { onConflict: "application_id,document_type" }
-        );
-
-        if (docError) {
-          setError(docError.message);
-          setIsLoading(false);
-          return;
-        }
-
-        await refreshApplication();
+        await uploadDocument("medical_certificate");
       },
       uploadPaymentProof: async () => {
-        if (!application) {
-          return;
-        }
-
-        if (!supabase || !userId) {
-          setApplication((current) =>
-            current
-              ? {
-                  ...current,
-                  documents: { ...current.documents, paymentProofUploaded: true }
-                }
-              : current
-          );
-          return;
-        }
-
-        setIsLoading(true);
-        setError(null);
-        const applicationRow = await supabase
-          .from("membership_applications")
-          .select("id")
-          .eq("user_id", userId)
-          .eq("season_id", application.seasonId)
-          .single();
-
-        if (applicationRow.error) {
-          setError(applicationRow.error.message);
-          setIsLoading(false);
-          return;
-        }
-
-        const { error: docError } = await supabase.from("application_documents").upsert(
-          {
-            application_id: applicationRow.data.id,
-            document_type: "payment_proof",
-            storage_path: `membership-documents/${application.seasonId}/${userId}/payment-proof-placeholder.pdf`,
-            status: "uploaded"
-          },
-          { onConflict: "application_id,document_type" }
-        );
-
-        if (docError) {
-          setError(docError.message);
-          setIsLoading(false);
-          return;
-        }
-
-        await refreshApplication();
+        await uploadDocument("payment_proof");
       },
       submitApplication: async () => {
         if (!application) {
@@ -409,7 +433,7 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         await refreshApplication();
       }
     }),
-    [application, error, isLoading, isSupabaseEnabled, refreshApplication, userId]
+    [application, error, isLoading, isSupabaseEnabled, refreshApplication, uploadDocument, userId]
   );
 
   return (
