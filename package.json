@@ -2,10 +2,10 @@
   "name": "helihyrox",
   "private": true,
   "overrides": {
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3"
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "@types/react": "~19.1.10",
+    "@types/react-dom": "~19.1.7"
   },
   "workspaces": [
     "apps/*",
