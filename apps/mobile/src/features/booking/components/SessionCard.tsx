@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Href, Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "@/theme/tokens";
 import type { SessionItem } from "@/features/booking/mockData";
@@ -6,7 +6,7 @@ import type { SessionItem } from "@/features/booking/mockData";
 type SessionCardProps = {
   session: SessionItem;
   actionLabel?: string;
-  href: string;
+  href: Href;
 };
 
 export function SessionCard({
@@ -14,6 +14,8 @@ export function SessionCard({
   actionLabel = "Voir le detail",
   href
 }: SessionCardProps) {
+  const isFull = session.bookedCount >= session.capacity;
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -26,8 +28,18 @@ export function SessionCard({
             {session.location} · Coach {session.coachName}
           </Text>
         </View>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>
+        <View
+          style={[
+            styles.badge,
+            isFull ? styles.badgeFull : undefined
+          ]}
+        >
+          <Text
+            style={[
+              styles.badgeText,
+              isFull ? styles.badgeTextFull : undefined
+            ]}
+          >
             {session.bookedCount}/{session.capacity}
           </Text>
         </View>
@@ -82,6 +94,12 @@ const styles = StyleSheet.create({
     color: colors.success,
     fontSize: 12,
     fontWeight: "700"
+  },
+  badgeFull: {
+    backgroundColor: "#FEF3C7"
+  },
+  badgeTextFull: {
+    color: colors.warning
   },
   button: {
     backgroundColor: colors.accent,

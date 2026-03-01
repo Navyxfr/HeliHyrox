@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { Screen } from "@/components/Screen";
+import { StackHeader } from "@/components/StackHeader";
 import { getSessionById } from "@/features/booking/mockData";
 import { colors } from "@/theme/tokens";
 
@@ -23,6 +24,7 @@ export default function SessionDetailScreen() {
 
   return (
     <Screen>
+      <StackHeader title="Detail seance" />
       <PlaceholderPanel
         eyebrow="MEMBER"
         title="SessionDetail"
