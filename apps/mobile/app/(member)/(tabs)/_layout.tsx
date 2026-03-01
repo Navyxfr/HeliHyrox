@@ -1,7 +1,10 @@
 import { Tabs } from "expo-router";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
 export default function MemberTabsLayout() {
+  const { roles } = useAuth();
+
   return (
     <Tabs
       screenOptions={{
@@ -18,6 +21,9 @@ export default function MemberTabsLayout() {
       <Tabs.Screen name="planning" options={{ title: "Planning" }} />
       <Tabs.Screen name="news" options={{ title: "News" }} />
       <Tabs.Screen name="profile" options={{ title: "Profil" }} />
+      {roles.includes("coach") ? (
+        <Tabs.Screen name="coach" options={{ title: "Coach" }} />
+      ) : null}
     </Tabs>
   );
 }

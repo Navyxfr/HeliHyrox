@@ -1,16 +1,19 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { useAuth } from "@/features/auth/AuthContext";
 import { Screen } from "@/components/Screen";
 import { colors } from "@/theme/tokens";
 
 export default function CandidateDashboardScreen() {
+  const { email } = useAuth();
+
   return (
     <Screen>
       <PlaceholderPanel
         eyebrow="CANDIDATE"
         title="CandidateDashboard"
-        body="Base du parcours candidat: profil, certificat de saison, reglement, paiement et statut du dossier."
+        body={`Base du parcours candidat: profil, certificat de saison, reglement, paiement et statut du dossier.${email ? ` Compte: ${email}.` : ""}`}
       />
       <View style={styles.actions}>
         <Link href="/(candidate)/application-form" asChild>
@@ -59,4 +62,3 @@ const styles = StyleSheet.create({
     textAlign: "center"
   }
 });
-

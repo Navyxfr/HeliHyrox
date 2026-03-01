@@ -17,6 +17,13 @@ export const membershipStatuses = [
 export const userRoles = ["member", "coach", "admin"] as const;
 
 export const bookingStatuses = ["confirmed", "cancelled", "no_show"] as const;
+export const derivedStatuses = [
+  "public",
+  "candidate",
+  "pending_member",
+  "member_active",
+  "suspended"
+] as const;
 
 export const newsVisibilityLevels = ["public", "members"] as const;
 
@@ -43,6 +50,7 @@ export type ApplicationStatus = (typeof applicationStatuses)[number];
 export type MembershipStatus = (typeof membershipStatuses)[number];
 export type UserRole = (typeof userRoles)[number];
 export type BookingStatus = (typeof bookingStatuses)[number];
+export type DerivedStatus = (typeof derivedStatuses)[number];
 export type NewsVisibilityLevel = (typeof newsVisibilityLevels)[number];
 export type SessionType = (typeof sessionTypes)[number];
 export type NotificationType = (typeof notificationTypes)[number];
