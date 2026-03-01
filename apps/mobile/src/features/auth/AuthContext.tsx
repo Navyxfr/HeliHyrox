@@ -1,5 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { DerivedStatus, UserRole } from "@helihyrox/shared";
+import type {
+  ApplicationStatus,
+  DerivedStatus,
+  MembershipStatus,
+  UserRole
+} from "@helihyrox/shared";
 import { usePathname, useRouter, useSegments } from "expo-router";
 import {
   createContext,
@@ -9,6 +14,7 @@ import {
   useMemo,
   useState
 } from "react";
+import { deriveStatusFromData } from "@/features/auth/deriveStatus";
 import { supabase } from "@/services/supabase";
 
 type MockSession = {
@@ -22,7 +28,10 @@ type AuthContextValue = {
   roles: UserRole[];
   email: string | null;
   isHydrated: boolean;
+  isLoading: boolean;
   isSupabaseEnabled: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signInAs: (status: DerivedStatus, roles?: UserRole[]) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -100,18 +109,78 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: null
   });
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function loadSupabaseUserState(userId: string, userEmail: string | null) {
+    if (!supabase) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    const [rolesResult, membershipsResult, applicationsResult] = await Promise.all([
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase
+        .from("memberships")
+        .select("status, activated_at")
+        .eq("user_id", userId)
+        .order("activated_at", { ascending: false })
+        .limit(1),
+      supabase
+        .from("membership_applications")
+        .select("status, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+    ]);
+
+    const roles =
+      rolesResult.data?.map((row) => row.role as UserRole) ??
+      (membershipsResult.data?.length ? (["member"] as UserRole[]) : []);
+
+    const membershipStatus =
+      (membershipsResult.data?.[0]?.status as MembershipStatus | undefined) ?? null;
+    const applicationStatus =
+      (applicationsResult.data?.[0]?.status as ApplicationStatus | undefined) ?? null;
+
+    const derivedStatus = deriveStatusFromData({
+      membershipStatus,
+      applicationStatus
+    });
+
+    setMockSession({
+      derivedStatus,
+      roles,
+      email: userEmail
+    });
+    setIsLoading(false);
+  }
 
   useEffect(() => {
     let isMounted = true;
 
     async function hydrate() {
-      const raw = await AsyncStorage.getItem(STORAGE_KEY);
-      if (!isMounted) {
-        return;
-      }
+      if (supabase) {
+        const {
+          data: { session }
+        } = await supabase.auth.getSession();
 
-      if (raw) {
-        setMockSession(JSON.parse(raw) as MockSession);
+        if (!isMounted) {
+          return;
+        }
+
+        if (session?.user) {
+          await loadSupabaseUserState(session.user.id, session.user.email ?? null);
+        }
+      } else {
+        const raw = await AsyncStorage.getItem(STORAGE_KEY);
+        if (!isMounted) {
+          return;
+        }
+
+        if (raw) {
+          setMockSession(JSON.parse(raw) as MockSession);
+        }
       }
       setIsHydrated(true);
     }
@@ -130,8 +199,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange(() => {
-      // Real Supabase session wiring will replace the mock session in a later lot.
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        setMockSession({
+          derivedStatus: "public",
+          roles: [],
+          email: null
+        });
+        return;
+      }
+
+      void loadSupabaseUserState(session.user.id, session.user.email ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -143,8 +221,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       roles: mockSession.roles,
       email: mockSession.email,
       isHydrated,
+      isLoading,
       isSupabaseEnabled: Boolean(supabase),
+      signIn: async (email, password) => {
+        if (!supabase) {
+          return { error: "Supabase non configure." };
+        }
+
+        setIsLoading(true);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        setIsLoading(false);
+        return { error: error?.message ?? null };
+      },
+      signUp: async (email, password) => {
+        if (!supabase) {
+          return { error: "Supabase non configure." };
+        }
+
+        setIsLoading(true);
+        const { error } = await supabase.auth.signUp({ email, password });
+        setIsLoading(false);
+        return { error: error?.message ?? null };
+      },
       signInAs: async (status, roles = getDefaultRoles(status)) => {
+        if (supabase) {
+          return;
+        }
+
         const nextSession: MockSession = {
           derivedStatus: status,
           roles,
@@ -155,6 +258,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession));
       },
       signOut: async () => {
+        if (supabase) {
+          setIsLoading(true);
+          await supabase.auth.signOut();
+          setIsLoading(false);
+          return;
+        }
+
         setMockSession({
           derivedStatus: "public",
           roles: [],
@@ -163,7 +273,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await AsyncStorage.removeItem(STORAGE_KEY);
       }
     }),
-    [isHydrated, mockSession]
+    [isHydrated, isLoading, mockSession]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

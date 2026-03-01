@@ -1,11 +1,15 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { useAuth } from "@/features/auth/AuthContext";
 import { Screen } from "@/components/Screen";
 import { colors } from "@/theme/tokens";
 
 export default function LoginScreen() {
-  const { isSupabaseEnabled, signInAs } = useAuth();
+  const { isLoading, isSupabaseEnabled, signIn, signInAs } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
     <Screen>
@@ -18,6 +22,39 @@ export default function LoginScreen() {
             : "Fallback mock actif. Les boutons simulent les statuts pour valider les guards de navigation."
         }
       />
+      {isSupabaseEnabled ? (
+        <>
+          <TextInput
+            autoCapitalize="none"
+            keyboardType="email-address"
+            onChangeText={setEmail}
+            placeholder="Email"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+            value={email}
+          />
+          <TextInput
+            onChangeText={setPassword}
+            placeholder="Mot de passe"
+            placeholderTextColor={colors.textMuted}
+            secureTextEntry
+            style={styles.input}
+            value={password}
+          />
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          <Pressable
+            onPress={async () => {
+              const result = await signIn(email, password);
+              setErrorMessage(result.error);
+            }}
+            style={styles.primaryButton}
+          >
+            <Text style={styles.primaryButtonText}>
+              {isLoading ? "Connexion..." : "Se connecter"}
+            </Text>
+          </Pressable>
+        </>
+      ) : null}
       <Pressable
         onPress={() => void signInAs("candidate")}
         style={styles.primaryButton}
@@ -78,5 +115,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center"
+  },
+  input: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: 16,
+    borderWidth: 1,
+    color: colors.text,
+    fontSize: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 14
+  },
+  errorText: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   }
 });
