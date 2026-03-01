@@ -1,18 +1,18 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { SessionCard } from "@/features/booking/components/SessionCard";
-import { mockSessions } from "@/features/booking/mockData";
+import { myBookings } from "@/features/booking/mockData";
 import { colors } from "@/theme/tokens";
 
-export default function PlanningScreen() {
+export default function MyBookingsScreen() {
   return (
     <Screen>
-      <Text style={styles.title}>Planning</Text>
+      <Text style={styles.title}>Mes reservations</Text>
       <ScrollView contentContainerStyle={styles.content}>
-        {mockSessions.map((session) => (
+        {myBookings.map((session) => (
           <SessionCard
             key={session.id}
-            actionLabel={session.isBooked ? "Voir la reservation" : "Voir la seance"}
+            actionLabel="Voir la reservation"
             href={`/(member)/session/${session.id}`}
             session={session}
           />

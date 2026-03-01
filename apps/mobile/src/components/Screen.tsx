@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     gap: 16,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     paddingHorizontal: 24,
     paddingVertical: 32
   }
