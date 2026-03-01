@@ -50,13 +50,13 @@ describe("deriveStatusFromData", () => {
     ).toBe("candidate");
   });
 
-  it("retourne public par defaut", () => {
+  it("retourne candidate par defaut pour un utilisateur connecte sans dossier", () => {
     expect(
       deriveStatusFromData({
         membershipStatus: null,
         applicationStatus: null
       })
-    ).toBe("public");
+    ).toBe("candidate");
   });
 
   it("retourne public pour une adhesion expiree ou annulee", () => {

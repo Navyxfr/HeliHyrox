@@ -24,5 +24,9 @@ export function deriveStatusFromData(input: {
     return "candidate";
   }
 
+  if (!input.membershipStatus && !input.applicationStatus) {
+    return "candidate";
+  }
+
   return "public";
 }
