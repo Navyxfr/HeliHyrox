@@ -14,6 +14,7 @@ import {
   mockCandidateApplication,
   type CandidateApplicationState
 } from "@/features/candidate/mockData";
+import { deriveApplicationStatus } from "@/features/candidate/deriveApplicationStatus";
 import { supabase } from "@/services/supabase";
 
 type CandidateContextValue = {
@@ -47,30 +48,6 @@ async function pickSingleDocument() {
 
   return result.assets[0];
 }
-
-function deriveApplicationStatus(input: {
-  currentStatus?: ApplicationStatus;
-  hasMedicalCertificate: boolean;
-  hasPaymentProof: boolean;
-  hasRulesAccepted: boolean;
-  hasProfile: boolean;
-}): ApplicationStatus {
-  if (
-    input.hasMedicalCertificate &&
-    input.hasPaymentProof &&
-    input.hasRulesAccepted &&
-    input.hasProfile
-  ) {
-    return "pending_review";
-  }
-
-  if (input.currentStatus === "changes_requested") {
-    return "changes_requested";
-  }
-
-  return "incomplete";
-}
-
 export function CandidateProvider({ children }: { children: ReactNode }) {
   const { isSupabaseEnabled, userId } = useAuth();
   const [application, setApplication] = useState<CandidateApplicationState | null>(

@@ -73,7 +73,9 @@ function createMockCoachSessions(): CoachSessionItem[] {
 }
 
 export default function CoachSessionsScreen() {
-  const [sessions, setSessions] = useState<CoachSessionItem[]>(createMockCoachSessions);
+  const [sessions, setSessions] = useState<CoachSessionItem[]>(
+    supabase ? [] : createMockCoachSessions
+  );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);

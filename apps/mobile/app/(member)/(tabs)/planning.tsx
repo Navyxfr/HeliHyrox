@@ -1,27 +1,34 @@
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Screen } from "@/components/Screen";
 import { SessionCard } from "@/features/booking/components/SessionCard";
 import { useBooking } from "@/features/booking/BookingContext";
 import { colors } from "@/theme/tokens";
 
 export default function PlanningScreen() {
-  const { error, isLoading, sessions } = useBooking();
+  const { error, isLoading, refreshSessions, sessions } = useBooking();
 
   return (
-    <Screen>
+    <Screen
+      refreshControlProps={{
+        onRefresh: () => {
+          void refreshSessions();
+        },
+        refreshing: isLoading,
+        tintColor: colors.primary
+      }}
+      scrollable
+    >
       <Text style={styles.title}>Planning</Text>
       {isLoading ? <Text style={styles.meta}>Chargement des seances...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <ScrollView contentContainerStyle={styles.content}>
-        {sessions.map((session) => (
-          <SessionCard
-            key={session.id}
-            actionLabel={session.isBooked ? "Voir la reservation" : "Voir la seance"}
-            href={`/(member)/session/${session.id}`}
-            session={session}
-          />
-        ))}
-      </ScrollView>
+      {sessions.map((session) => (
+        <SessionCard
+          key={session.id}
+          actionLabel={session.isBooked ? "Voir la reservation" : "Voir la seance"}
+          href={`/(member)/session/${session.id}`}
+          session={session}
+        />
+      ))}
     </Screen>
   );
 }
@@ -31,10 +38,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 28,
     fontWeight: "800"
-  },
-  content: {
-    gap: 12,
-    paddingBottom: 32
   },
   meta: {
     color: colors.textMuted,

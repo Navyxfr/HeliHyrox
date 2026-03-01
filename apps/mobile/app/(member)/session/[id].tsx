@@ -1,17 +1,17 @@
 import { useLocalSearchParams } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { EmptyState } from "@/components/EmptyState";
-import { useToast } from "@/components/Toast";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
+import { useToast } from "@/components/Toast";
+import { Button } from "@/components/ui/Button";
 import { useBooking } from "@/features/booking/BookingContext";
 import { colors } from "@/theme/tokens";
 
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { showToast } = useToast();
-  const { cancelBooking, error, getSessionById, isLoading, reserveSession } =
-    useBooking();
+  const { cancelBooking, error, getSessionById, isLoading, reserveSession } = useBooking();
   const session = getSessionById(id);
 
   if (!session) {
@@ -48,9 +48,9 @@ export default function SessionDetailScreen() {
         </Text>
         <Text style={styles.label}>Type</Text>
         <Text style={styles.value}>{session.sessionType}</Text>
-        <Pressable
-          accessibilityRole="button"
-          disabled={isLoading}
+        <Button
+          isLoading={isLoading}
+          label={session.isBooked ? "Annuler la réservation" : "Réserver la séance"}
           onPress={async () => {
             const success = session.isBooked
               ? await cancelBooking(session.id)
@@ -63,23 +63,8 @@ export default function SessionDetailScreen() {
               );
             }
           }}
-          style={[
-            session.isBooked ? styles.secondaryButton : styles.primaryButton,
-            isLoading ? styles.buttonDisabled : null
-          ]}
-        >
-          <Text
-            style={
-              session.isBooked ? styles.secondaryButtonText : styles.primaryButtonText
-            }
-          >
-            {isLoading
-              ? "Traitement..."
-              : session.isBooked
-                ? "Annuler la réservation"
-                : "Réserver la séance"}
-          </Text>
-        </Pressable>
+          variant={session.isBooked ? "secondary" : "primary"}
+        />
       </View>
     </Screen>
   );
@@ -134,36 +119,5 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontSize: 13,
     fontWeight: "600"
-  },
-  buttonDisabled: {
-    opacity: 0.6
-  },
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    marginTop: 12,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 15,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginTop: 12,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 15,
-    fontWeight: "600",
-    textAlign: "center"
   }
 });
