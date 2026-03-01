@@ -1,8 +1,11 @@
+import { Link, type Href } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { Text } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
-import { useAuth } from "@/features/auth/AuthContext";
 import { Screen } from "@/components/Screen";
+import { AppTextInput } from "@/components/ui/AppTextInput";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
 export default function LoginScreen() {
@@ -12,127 +15,79 @@ export default function LoginScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
-    <Screen>
+    <Screen scrollable>
       <PlaceholderPanel
-        eyebrow="AUTH"
-        title="Login"
         body={
           isSupabaseEnabled
-            ? "Supabase est configure. Le prochain lot branchera le vrai formulaire de connexion."
+            ? "Supabase est configuré. Connectez-vous avec votre compte existant."
             : "Fallback mock actif. Les boutons simulent les statuts pour valider les guards de navigation."
         }
+        eyebrow="AUTH"
+        title="Connexion"
       />
       {isSupabaseEnabled ? (
         <>
-          <TextInput
+          <AppTextInput
+            accessibilityLabel="Email"
             autoCapitalize="none"
+            error={null}
             keyboardType="email-address"
+            label="Email"
             onChangeText={setEmail}
             placeholder="Email"
-            placeholderTextColor={colors.textMuted}
-            style={styles.input}
             value={email}
           />
-          <TextInput
+          <AppTextInput
+            accessibilityLabel="Mot de passe"
+            error={errorMessage}
+            label="Mot de passe"
             onChangeText={setPassword}
             placeholder="Mot de passe"
-            placeholderTextColor={colors.textMuted}
             secureTextEntry
-            style={styles.input}
             value={password}
           />
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-          <Pressable
+          <Button
+            isLoading={isLoading}
+            label="Se connecter"
             onPress={async () => {
               const result = await signIn(email, password);
               setErrorMessage(result.error);
             }}
-            style={styles.primaryButton}
+          />
+          <Link
+            href={"/(auth)/reset-password" as Href}
+            style={{ color: colors.primary, fontWeight: "600" }}
           >
-            <Text style={styles.primaryButtonText}>
-              {isLoading ? "Connexion..." : "Se connecter"}
-            </Text>
-          </Pressable>
+            Mot de passe oublié ?
+          </Link>
         </>
       ) : null}
       {!isSupabaseEnabled ? (
         <>
-          <Pressable
-            onPress={() => void signInAs("candidate")}
-            style={styles.primaryButton}
-          >
-            <Text style={styles.primaryButtonText}>Simuler candidat</Text>
-          </Pressable>
-          <Pressable
+          <Button label="Simuler candidat" onPress={() => void signInAs("candidate")} />
+          <Button
+            label="Simuler pending"
             onPress={() => void signInAs("pending_member")}
-            style={styles.secondaryButton}
-          >
-            <Text style={styles.secondaryButtonText}>Simuler pending</Text>
-          </Pressable>
-          <Pressable
+            variant="secondary"
+          />
+          <Button
+            label="Simuler membre actif"
             onPress={() => void signInAs("member_active")}
-            style={styles.secondaryButton}
-          >
-            <Text style={styles.secondaryButtonText}>Simuler membre actif</Text>
-          </Pressable>
-          <Pressable
+            variant="secondary"
+          />
+          <Button
+            label="Simuler coach"
             onPress={() => void signInAs("member_active", ["member", "coach"])}
-            style={styles.secondaryButton}
-          >
-            <Text style={styles.secondaryButtonText}>Simuler coach</Text>
-          </Pressable>
-          <Pressable
+            variant="secondary"
+          />
+          <Button
+            label="Simuler suspendu"
             onPress={() => void signInAs("suspended")}
-            style={styles.secondaryButton}
-          >
-            <Text style={styles.secondaryButtonText}>Simuler suspendu</Text>
-          </Pressable>
+            variant="secondary"
+          />
         </>
       ) : null}
+      {errorMessage ? <Text style={{ color: colors.danger }}>{errorMessage}</Text> : null}
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
-  },
-  input: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    color: colors.text,
-    fontSize: 15,
-    paddingHorizontal: 16,
-    paddingVertical: 14
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 13,
-    fontWeight: "600"
-  }
-});

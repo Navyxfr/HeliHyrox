@@ -10,6 +10,10 @@ import {
 import { useAuth } from "@/features/auth/AuthContext";
 import { supabase } from "@/services/supabase";
 import { formatDateLabel, formatTimeLabel } from "@/features/booking/formatters";
+import {
+  applyMockCancellation,
+  applyMockReservation
+} from "@/features/booking/mockBookingState";
 import { mockSessions, type SessionItem } from "@/features/booking/mockData";
 
 type SessionRpcRow = {
@@ -121,17 +125,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           return true;
         }
 
-        setSessions((current) =>
-          current.map((session) =>
-            session.id === sessionId && !session.isBooked
-              ? {
-                  ...session,
-                  isBooked: true,
-                  bookedCount: Math.min(session.bookedCount + 1, session.capacity)
-                }
-              : session
-          )
-        );
+        setSessions((current) => applyMockReservation(current, sessionId));
         return true;
       },
       cancelBooking: async (sessionId: string) => {
@@ -152,17 +146,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           return true;
         }
 
-        setSessions((current) =>
-          current.map((session) =>
-            session.id === sessionId && session.isBooked
-              ? {
-                  ...session,
-                  isBooked: false,
-                  bookedCount: Math.max(session.bookedCount - 1, 0)
-                }
-              : session
-          )
-        );
+        setSessions((current) => applyMockCancellation(current, sessionId));
         return true;
       },
       getSessionById

@@ -35,6 +35,7 @@ type AuthContextValue = {
   isSupabaseEnabled: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
   signInAs: (status: DerivedStatus, roles?: UserRole[]) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -272,6 +273,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setIsLoading(true);
         const { error } = await supabase.auth.signUp({ email, password });
+        setIsLoading(false);
+        return { error: error?.message ?? null };
+      },
+      resetPassword: async (email) => {
+        if (!supabase) {
+          return { error: "Supabase non configure." };
+        }
+
+        setIsLoading(true);
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
         setIsLoading(false);
         return { error: error?.message ?? null };
       },

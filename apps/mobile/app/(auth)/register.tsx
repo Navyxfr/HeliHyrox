@@ -1,10 +1,10 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
-import { useAuth } from "@/features/auth/AuthContext";
 import { Screen } from "@/components/Screen";
-import { colors } from "@/theme/tokens";
+import { AppTextInput } from "@/components/ui/AppTextInput";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/AuthContext";
 
 export default function RegisterScreen() {
   const { isLoading, isSupabaseEnabled, signUp } = useAuth();
@@ -14,37 +14,40 @@ export default function RegisterScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
-    <Screen>
+    <Screen scrollable>
       <PlaceholderPanel
-        eyebrow="AUTH"
-        title="Créer un compte"
         body={
           isSupabaseEnabled
             ? "Création de compte publique prête à être branchée sur Supabase Auth."
             : "Création de compte publique en mode démonstration. Le flux continue vers une vérification email simulée."
         }
+        eyebrow="AUTH"
+        title="Créer un compte"
       />
       {isSupabaseEnabled ? (
         <>
-          <TextInput
+          <AppTextInput
+            accessibilityLabel="Email"
             autoCapitalize="none"
+            error={null}
             keyboardType="email-address"
+            label="Email"
             onChangeText={setEmail}
             placeholder="Email"
-            placeholderTextColor={colors.textMuted}
-            style={styles.input}
             value={email}
           />
-          <TextInput
+          <AppTextInput
+            accessibilityLabel="Mot de passe"
+            error={errorMessage}
+            label="Mot de passe"
             onChangeText={setPassword}
             placeholder="Mot de passe"
-            placeholderTextColor={colors.textMuted}
             secureTextEntry
-            style={styles.input}
             value={password}
           />
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-          <Pressable
+          <Button
+            isLoading={isLoading}
+            label="Créer un compte"
             onPress={async () => {
               const result = await signUp(email, password);
               setErrorMessage(result.error);
@@ -52,51 +55,14 @@ export default function RegisterScreen() {
                 router.replace("/(auth)/verify-email");
               }
             }}
-            style={styles.primaryButton}
-          >
-            <Text style={styles.primaryButtonText}>
-              {isLoading ? "Création..." : "Créer un compte"}
-            </Text>
-          </Pressable>
+          />
         </>
       ) : null}
       {!isSupabaseEnabled ? (
         <Link href="/(auth)/verify-email" asChild>
-          <Pressable style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>Simuler l’inscription</Text>
-          </Pressable>
+          <Button label="Simuler l’inscription" />
         </Link>
       ) : null}
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  input: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    color: colors.text,
-    fontSize: 15,
-    paddingHorizontal: 16,
-    paddingVertical: 14
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 13,
-    fontWeight: "600"
-  }
-});
