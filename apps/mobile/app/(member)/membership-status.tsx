@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
-import { membershipSummary } from "@/features/membership/mockData";
+import { useMemberData } from "@/features/member/MemberDataContext";
 import { colors } from "@/theme/tokens";
 
 export default function MembershipStatusScreen() {
+  const { membershipSummary } = useMemberData();
+
   return (
     <Screen>
       <StackHeader title="Statut administratif" />

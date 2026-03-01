@@ -1,16 +1,28 @@
 import { Link } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
-import { mockRecords } from "@/features/records/mockData";
+import { useMemberData } from "@/features/member/MemberDataContext";
 import { colors } from "@/theme/tokens";
 
 export default function RecordsScreen() {
+  const { error, isLoading, records } = useMemberData();
+
   return (
     <Screen>
       <StackHeader title="Mes records" />
       <ScrollView contentContainerStyle={styles.content}>
-        {mockRecords.map((record) => (
+        {isLoading ? <Text style={styles.date}>Chargement...</Text> : null}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {!isLoading && records.length === 0 ? (
+          <PlaceholderPanel
+            eyebrow="MEMBER"
+            title="Aucun record"
+            body="Ajoute ton premier resultat pour commencer ton historique personnel."
+          />
+        ) : null}
+        {records.map((record) => (
           <View key={record.id} style={styles.card}>
             <Text style={styles.title}>{record.movement}</Text>
             <Text style={styles.value}>{record.valueLabel}</Text>
@@ -53,6 +65,11 @@ const styles = StyleSheet.create({
   date: {
     color: colors.textMuted,
     fontSize: 12
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   },
   button: {
     backgroundColor: colors.accent,

@@ -1,15 +1,27 @@
 import { Link } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { Screen } from "@/components/Screen";
-import { mockNews } from "@/features/news/mockData";
+import { useMemberData } from "@/features/member/MemberDataContext";
 import { colors } from "@/theme/tokens";
 
 export default function NewsScreen() {
+  const { error, isLoading, news } = useMemberData();
+
   return (
     <Screen>
       <Text style={styles.title}>Actualites</Text>
       <ScrollView contentContainerStyle={styles.content}>
-        {mockNews.map((item) => (
+        {isLoading ? <Text style={styles.meta}>Chargement...</Text> : null}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {!isLoading && news.length === 0 ? (
+          <PlaceholderPanel
+            eyebrow="MEMBER"
+            title="Aucune actualite"
+            body="Les prochaines informations de la section apparaitront ici."
+          />
+        ) : null}
+        {news.map((item) => (
           <View key={item.id} style={styles.card}>
             <Text style={styles.cardTitle}>{item.title}</Text>
             <Text style={styles.summary}>{item.summary}</Text>
@@ -57,6 +69,11 @@ const styles = StyleSheet.create({
   meta: {
     color: colors.textMuted,
     fontSize: 12
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "600"
   },
   button: {
     backgroundColor: colors.surface,

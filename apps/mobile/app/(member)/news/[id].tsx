@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { PlaceholderPanel } from "@/components/PlaceholderPanel";
 import { Screen } from "@/components/Screen";
 import { StackHeader } from "@/components/StackHeader";
-import { getNewsById } from "@/features/news/mockData";
+import { useMemberData } from "@/features/member/MemberDataContext";
 import { colors } from "@/theme/tokens";
 
 export default function NewsDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const news = getNewsById(id);
+  const { news: items } = useMemberData();
+  const news = items.find((item) => item.id === id) ?? null;
 
   if (!news) {
     return (
