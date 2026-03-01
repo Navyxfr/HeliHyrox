@@ -93,7 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .order("starts_at", { ascending: false })
         .limit(1);
 
-      const activeSeasonId = activeSeasonResult.data?.[0]?.id ?? null;
+      const activeSeasonId = activeSeasonResult.error
+        ? null
+        : activeSeasonResult.data?.[0]?.id ?? null;
 
       let membershipsQuery = supabase
         .from("memberships")
