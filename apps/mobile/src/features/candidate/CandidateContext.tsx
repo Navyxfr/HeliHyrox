@@ -2,12 +2,12 @@ import type { ApplicationStatus } from "@helihyrox/shared";
 import * as DocumentPicker from "expo-document-picker";
 import {
   createContext,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
+  type ReactNode
 } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import {
@@ -72,7 +72,7 @@ function deriveApplicationStatus(input: {
 }
 
 export function CandidateProvider({ children }: { children: ReactNode }) {
-  const { email, isSupabaseEnabled, userId } = useAuth();
+  const { isSupabaseEnabled, userId } = useAuth();
   const [application, setApplication] = useState<CandidateApplicationState | null>(
     isSupabaseEnabled ? null : mockCandidateApplication
   );

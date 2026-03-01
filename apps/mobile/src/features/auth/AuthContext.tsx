@@ -9,11 +9,11 @@ import { usePathname, useRouter, useSegments } from "expo-router";
 import {
   useCallback,
   createContext,
-  ReactNode,
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
+  type ReactNode
 } from "react";
 import { deriveStatusFromData } from "@/features/auth/deriveStatus";
 import { supabase } from "@/services/supabase";

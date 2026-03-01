@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   ScrollView,
-  StyleProp,
   StyleSheet,
   View,
-  ViewStyle
+  type StyleProp,
+  type ViewStyle
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/theme/tokens";

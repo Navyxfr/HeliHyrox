@@ -1,4 +1,4 @@
-import { Href, Link } from "expo-router";
+import { Link, type Href } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "@/theme/tokens";
 import type { SessionItem } from "@/features/booking/mockData";
@@ -11,7 +11,7 @@ type SessionCardProps = {
 
 export function SessionCard({
   session,
-  actionLabel = "Voir le détail",
+  actionLabel = "Voir le detail",
   href
 }: SessionCardProps) {
   const isFull = session.bookedCount >= session.capacity;

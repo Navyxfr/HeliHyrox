@@ -1,4 +1,12 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode
+} from "react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { membershipSummary as mockMembershipSummary } from "@/features/membership/mockData";
 import { mockNews } from "@/features/news/mockData";
@@ -84,17 +92,17 @@ function mapApplicationStatusLabel(status?: string | null) {
     case "pending_review":
       return "Dossier en attente";
     case "changes_requested":
-      return "Correction demandée";
+      return "Correction demandee";
     case "approved":
-      return "Adhésion active";
+      return "Adhesion active";
     case "rejected":
-      return "Dossier refusé";
+      return "Dossier refuse";
     case "incomplete":
       return "Dossier incomplet";
     case "draft":
       return "Dossier en cours";
     default:
-      return "Adhésion active";
+      return "Adhesion active";
   }
 }
 
@@ -212,7 +220,7 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    let certificateStatusLabel = "À fournir";
+    let certificateStatusLabel = "A fournir";
 
     if (applicationResult.data?.id) {
       const documentsResult = await supabase
@@ -230,8 +238,8 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
         (document) =>
           document.document_type === "medical_certificate" && document.status !== "rejected"
       )
-        ? "Certificat reçu"
-        : "À fournir";
+        ? "Certificat recu"
+        : "A fournir";
     }
 
     setNews(
@@ -273,7 +281,7 @@ export function MemberDataProvider({ children }: { children: ReactNode }) {
       certificateStatusLabel,
       dossierStatusLabel:
         membershipResult.data?.status === "active"
-          ? "Adhésion active"
+          ? "Adhesion active"
           : mapApplicationStatusLabel(applicationResult.data?.status),
       seasonEndsAtLabel: formatDateLabel(activeSeason.ends_at)
     });

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { colors } from "@/theme/tokens";
 
@@ -48,4 +48,3 @@ const styles = StyleSheet.create({
     lineHeight: 22
   }
 });
-

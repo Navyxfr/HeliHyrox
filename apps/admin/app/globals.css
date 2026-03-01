@@ -48,6 +48,14 @@ body {
   font: inherit;
 }
 
+.nav-link:focus-visible,
+.nav-button:focus-visible,
+.primary-action:focus-visible,
+.document-links a:focus-visible {
+  outline: 3px solid rgba(255, 237, 0, 0.75);
+  outline-offset: 2px;
+}
+
 .page-shell {
   max-width: 1200px;
   margin: 0 auto;
@@ -158,6 +166,11 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 16px;
+}
+
+.document-links a {
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .admin-form {

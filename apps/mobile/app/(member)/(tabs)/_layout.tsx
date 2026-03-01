@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
@@ -14,19 +15,51 @@ export default function MemberTabsLayout() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           borderTopColor: colors.border,
-          backgroundColor: colors.surface
+          backgroundColor: colors.surface,
+          height: 72,
+          paddingTop: 8,
+          paddingBottom: 10
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "700"
         }
       }}
     >
-      <Tabs.Screen name="index" options={{ title: "Accueil" }} />
-      <Tabs.Screen name="planning" options={{ title: "Planning" }} />
-      <Tabs.Screen name="news" options={{ title: "News" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profil" }} />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Accueil",
+          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />
+        }}
+      />
+      <Tabs.Screen
+        name="planning"
+        options={{
+          title: "Planning",
+          tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" color={color} size={size} />
+        }}
+      />
+      <Tabs.Screen
+        name="news"
+        options={{
+          title: "Actus",
+          tabBarIcon: ({ color, size }) => <Ionicons name="newspaper-outline" color={color} size={size} />
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profil",
+          tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} />
+        }}
+      />
       <Tabs.Screen
         name="coach"
         options={{
           title: "Coach",
-          href: isCoach ? "/(member)/(tabs)/coach" : null
+          href: isCoach ? "/(member)/(tabs)/coach" : null,
+          tabBarIcon: ({ color, size }) => <Ionicons name="people-outline" color={color} size={size} />
         }}
       />
     </Tabs>

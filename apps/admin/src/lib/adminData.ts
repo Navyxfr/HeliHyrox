@@ -35,6 +35,22 @@ type ProfileRow = {
   phone: string | null;
 };
 
+type NewsPostRow = {
+  id: string;
+  title: string;
+  visibility: string;
+  published_at: string | null;
+};
+
+type SessionRow = {
+  id: string;
+  title: string;
+  session_type: string;
+  starts_at: string;
+  location: string | null;
+  capacity: number;
+};
+
 function createMockApplications(): AdminApplicationItem[] {
   return mockApplications.map((application) => ({
     id: application.id,
@@ -144,7 +160,7 @@ export async function getNewsPosts() {
     return mockNewsPosts;
   }
 
-  return data.map((row: any) => ({
+  return (data as NewsPostRow[]).map((row) => ({
     id: row.id,
     title: row.title,
     visibility: row.visibility,
@@ -169,7 +185,7 @@ export async function getSessions() {
     return mockSessions;
   }
 
-  return data.map((row: any) => ({
+  return (data as SessionRow[]).map((row) => ({
     id: row.id,
     title: row.title,
     sessionType: row.session_type,
