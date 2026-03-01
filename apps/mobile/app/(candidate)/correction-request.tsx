@@ -1,30 +1,33 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
 import { colors } from "@/theme/tokens";
 
 export default function CorrectionRequestScreen() {
+  const router = useRouter();
+
   return (
     <Screen scrollable>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Correction demandée</Text>
-        <Text style={styles.title}>Éléments à compléter</Text>
+        <Text style={styles.eyebrow}>Correction demandee</Text>
+        <Text style={styles.title}>Elements a completer</Text>
         <Text style={styles.body}>
-          Le bureau peut demander des compléments avant validation finale.
-          Les cas les plus fréquents sont un certificat illisible, une preuve de
-          paiement manquante ou un profil incomplet.
+          Le bureau peut demander des complements avant validation finale. Les cas les plus
+          frequents sont un certificat illisible, une preuve de paiement manquante ou un profil
+          incomplet.
         </Text>
         <View style={styles.list}>
-          <Text style={styles.listItem}>• Vérifier les informations du profil</Text>
-          <Text style={styles.listItem}>• Re-déposer un certificat lisible si besoin</Text>
-          <Text style={styles.listItem}>• Re-déposer la preuve de paiement si nécessaire</Text>
+          <Text style={styles.listItem}>- Verifier les informations du profil</Text>
+          <Text style={styles.listItem}>- Re-deposer un certificat lisible si besoin</Text>
+          <Text style={styles.listItem}>- Re-deposer la preuve de paiement si necessaire</Text>
         </View>
       </View>
-      <Link href="/(candidate)" asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Retourner au dossier</Text>
-        </Pressable>
-      </Link>
+      <Button
+        label="Retourner au dossier"
+        onPress={() => router.push("/(candidate)")}
+        variant="secondary"
+      />
     </Screen>
   );
 }
@@ -65,19 +68,5 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 14,
     lineHeight: 20
-  },
-  button: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
   }
 });

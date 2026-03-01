@@ -1,31 +1,29 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
 import { colors } from "@/theme/tokens";
 
 export default function PublicHomeScreen() {
+  const router = useRouter();
+
   return (
     <Screen>
       <View style={styles.hero}>
         <Text style={styles.kicker}>AIRBUS HELICOPTERS / SECTION SPORTIVE</Text>
         <Text style={styles.title}>HeliHyrox</Text>
         <Text style={styles.subtitle}>
-          Application publique pour adhesion de saison, espace membre, coach et
-          bureau.
+          Application publique pour adhesion de saison, espace membre, coach et bureau.
         </Text>
       </View>
 
       <View style={styles.actions}>
-        <Link href="/(auth)/login" asChild>
-          <Pressable style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>Se connecter</Text>
-          </Pressable>
-        </Link>
-        <Link href="/(auth)/register" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Creer un compte</Text>
-          </Pressable>
-        </Link>
+        <Button label="Se connecter" onPress={() => router.push("/(auth)/login")} />
+        <Button
+          label="Creer un compte"
+          onPress={() => router.push("/(auth)/register")}
+          variant="secondary"
+        />
       </View>
     </Screen>
   );
@@ -54,32 +52,5 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 12
-  },
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
   }
 });
-

@@ -1,4 +1,4 @@
-import { Link, type Href } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { CandidateApplicationState } from "@/features/candidate/mockData";
 import { colors } from "@/theme/tokens";
@@ -26,23 +26,23 @@ function buildSteps(application: CandidateApplicationState): StepItem[] {
     {
       id: "profile",
       title: "Profil",
-      description: hasProfile ? "Profil administratif complété." : "Renseignez prénom, nom et téléphone.",
+      description: hasProfile ? "Profil administratif complete." : "Renseignez prenom, nom et telephone.",
       href: "/(candidate)/application-form",
       completed: hasProfile,
       active: true
     },
     {
       id: "medical",
-      title: "Certificat médical",
-      description: hasMedicalCertificate ? "Document déposé pour la saison active." : "Déposez votre certificat médical annuel.",
+      title: "Certificat medical",
+      description: hasMedicalCertificate ? "Document depose pour la saison active." : "Deposez votre certificat medical annuel.",
       href: "/(candidate)/medical-certificate",
       completed: hasMedicalCertificate,
       active: hasProfile
     },
     {
       id: "rules",
-      title: "Règlement intérieur",
-      description: hasRulesAccepted ? "Le règlement a été accepté." : "Lisez puis acceptez le règlement de la section.",
+      title: "Reglement interieur",
+      description: hasRulesAccepted ? "Le reglement a ete accepte." : "Lisez puis acceptez le reglement de la section.",
       href: "/(candidate)/rules",
       completed: hasRulesAccepted,
       active: hasProfile && hasMedicalCertificate
@@ -51,7 +51,7 @@ function buildSteps(application: CandidateApplicationState): StepItem[] {
       id: "payment",
       title: "Paiement",
       description: hasPaymentProof
-        ? "La preuve de paiement est déposée."
+        ? "La preuve de paiement est deposee."
         : `Montant attendu : ${application.membershipFeeLabel}.`,
       href: "/(candidate)/payment-info",
       completed: hasPaymentProof,
@@ -65,7 +65,7 @@ function getStepVisual(step: StepItem) {
     return {
       badge: styles.badgeSuccess,
       badgeText: styles.badgeSuccessText,
-      symbol: "✓"
+      symbol: "OK"
     };
   }
 
@@ -73,18 +73,19 @@ function getStepVisual(step: StepItem) {
     return {
       badge: styles.badgeWarning,
       badgeText: styles.badgeWarningText,
-      symbol: "•"
+      symbol: "!"
     };
   }
 
   return {
     badge: styles.badgeNeutral,
     badgeText: styles.badgeNeutralText,
-    symbol: "○"
+    symbol: "o"
   };
 }
 
 export function CandidateStepper({ application }: CandidateStepperProps) {
+  const router = useRouter();
   const steps = buildSteps(application);
   const completedCount = steps.filter((step) => step.completed).length;
   const isReadyToSubmit = steps.every((step) => step.completed);
@@ -92,10 +93,10 @@ export function CandidateStepper({ application }: CandidateStepperProps) {
   return (
     <View style={styles.panel}>
       <View style={styles.hero}>
-        <Text style={styles.eyebrow}>Parcours d’adhésion</Text>
+        <Text style={styles.eyebrow}>Parcours d'adhesion</Text>
         <Text style={styles.title}>Saison {application.seasonLabel}</Text>
         <Text style={styles.subtitle}>
-          {completedCount}/4 étapes complétées avant soumission au bureau.
+          {completedCount}/4 etapes completees avant soumission au bureau.
         </Text>
       </View>
 
@@ -113,27 +114,32 @@ export function CandidateStepper({ application }: CandidateStepperProps) {
           const visual = getStepVisual(step);
 
           return (
-            <Link href={step.href} asChild key={step.id}>
-              <Pressable
-                disabled={!step.active}
-                style={[
-                  styles.stepCard,
-                  step.active ? null : styles.stepCardDisabled
-                ]}
-              >
-                <View style={styles.stepHeader}>
-                  <View style={[styles.badge, visual.badge]}>
-                    <Text style={[styles.badgeText, visual.badgeText]}>{visual.symbol}</Text>
-                  </View>
-                  <View style={styles.stepCopy}>
-                    <Text style={styles.stepTitle}>
-                      {index + 1}. {step.title}
-                    </Text>
-                    <Text style={styles.stepDescription}>{step.description}</Text>
-                  </View>
+            <Pressable
+              accessibilityRole="button"
+              disabled={!step.active}
+              key={step.id}
+              onPress={() => {
+                if (step.active) {
+                  router.push(step.href);
+                }
+              }}
+              style={[
+                styles.stepCard,
+                step.active ? null : styles.stepCardDisabled
+              ]}
+            >
+              <View style={styles.stepHeader}>
+                <View style={[styles.badge, visual.badge]}>
+                  <Text style={[styles.badgeText, visual.badgeText]}>{visual.symbol}</Text>
                 </View>
-              </Pressable>
-            </Link>
+                <View style={styles.stepCopy}>
+                  <Text style={styles.stepTitle}>
+                    {index + 1}. {step.title}
+                  </Text>
+                  <Text style={styles.stepDescription}>{step.description}</Text>
+                </View>
+              </View>
+            </Pressable>
           );
         })}
       </View>
@@ -143,7 +149,7 @@ export function CandidateStepper({ application }: CandidateStepperProps) {
         <Text style={styles.submitText}>
           {isReadyToSubmit
             ? "Votre dossier est complet. Vous pouvez maintenant le soumettre au bureau."
-            : "Terminez toutes les étapes avant d’ouvrir la soumission finale."}
+            : "Terminez toutes les etapes avant d'ouvrir la soumission finale."}
         </Text>
       </View>
     </View>
@@ -215,7 +221,7 @@ const styles = StyleSheet.create({
     width: 30
   },
   badgeText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "800"
   },
   badgeSuccess: {

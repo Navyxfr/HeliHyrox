@@ -1,10 +1,11 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { PlaceholderPanel } from "@/components/PlaceholderPanel";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { AppTextInput } from "@/components/ui/AppTextInput";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/features/auth/AuthContext";
+import { colors } from "@/theme/tokens";
 
 export default function RegisterScreen() {
   const { isLoading, isSupabaseEnabled, signUp } = useAuth();
@@ -15,21 +16,20 @@ export default function RegisterScreen() {
 
   return (
     <Screen scrollable>
-      <PlaceholderPanel
-        body={
-          isSupabaseEnabled
-            ? "Création de compte publique prête à être branchée sur Supabase Auth."
-            : "Création de compte publique en mode démonstration. Le flux continue vers une vérification email simulée."
-        }
-        eyebrow="AUTH"
-        title="Créer un compte"
-      />
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Auth</Text>
+        <Text style={styles.title}>Creer un compte</Text>
+        <Text style={styles.body}>
+          {isSupabaseEnabled
+            ? "Creation de compte publique prete a etre branchee sur Supabase Auth."
+            : "Creation de compte publique en mode demonstration. Le flux continue vers une verification email simulee."}
+        </Text>
+      </View>
       {isSupabaseEnabled ? (
         <>
           <AppTextInput
             accessibilityLabel="Email"
             autoCapitalize="none"
-            error={null}
             keyboardType="email-address"
             label="Email"
             onChangeText={setEmail}
@@ -47,7 +47,7 @@ export default function RegisterScreen() {
           />
           <Button
             isLoading={isLoading}
-            label="Créer un compte"
+            label="Creer un compte"
             onPress={async () => {
               const result = await signUp(email, password);
               setErrorMessage(result.error);
@@ -59,10 +59,34 @@ export default function RegisterScreen() {
         </>
       ) : null}
       {!isSupabaseEnabled ? (
-        <Link href="/(auth)/verify-email" asChild>
-          <Button label="Simuler l’inscription" />
-        </Link>
+        <Button
+          label="Simuler l'inscription"
+          onPress={() => router.push("/(auth)/verify-email")}
+        />
       ) : null}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    gap: 8
+  },
+  eyebrow: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase"
+  },
+  title: {
+    color: colors.primary,
+    fontSize: 28,
+    fontWeight: "800"
+  },
+  body: {
+    color: colors.text,
+    fontSize: 15,
+    lineHeight: 22
+  }
+});

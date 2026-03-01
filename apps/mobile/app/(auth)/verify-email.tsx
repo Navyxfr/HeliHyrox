@@ -1,37 +1,38 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
 export default function VerifyEmailScreen() {
+  const router = useRouter();
   const { email, isSupabaseEnabled, signInAs } = useAuth();
 
   return (
     <Screen scrollable>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Vérification email</Text>
+        <Text style={styles.eyebrow}>Verification email</Text>
         <Text style={styles.title}>Confirmez votre adresse</Text>
         <Text style={styles.body}>
           {email
-            ? `Un email de confirmation a été envoyé à ${email}. Ouvrez le lien reçu pour activer votre dossier d’adhésion.`
-            : "Un email de confirmation a été envoyé. Ouvrez le lien reçu pour activer votre dossier d’adhésion."}
+            ? `Un email de confirmation a ete envoye a ${email}. Ouvrez le lien recu pour activer votre dossier d'adhesion.`
+            : "Un email de confirmation a ete envoye. Ouvrez le lien recu pour activer votre dossier d'adhesion."}
         </Text>
         <Text style={styles.hint}>
           {isSupabaseEnabled
-            ? "Une fois l’adresse confirmée, reconnectez-vous pour reprendre le parcours candidat."
-            : "Mode démonstration actif : vous pouvez continuer directement."}
+            ? "Une fois l'adresse confirmee, reconnectez-vous pour reprendre le parcours candidat."
+            : "Mode demonstration actif : vous pouvez continuer directement."}
         </Text>
       </View>
       {!isSupabaseEnabled ? (
-        <Link href="/(candidate)" asChild>
-          <Pressable
-            onPress={() => void signInAs("candidate")}
-            style={styles.primaryButton}
-          >
-            <Text style={styles.primaryButtonText}>Continuer vers la candidature</Text>
-          </Pressable>
-        </Link>
+        <Button
+          label="Continuer vers la candidature"
+          onPress={async () => {
+            await signInAs("candidate");
+            router.push("/(candidate)");
+          }}
+        />
       ) : null}
     </Screen>
   );
@@ -67,17 +68,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 13,
     lineHeight: 20
-  },
-  primaryButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  primaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   }
 });

@@ -1,12 +1,14 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CandidateStepper } from "@/features/candidate/components/CandidateStepper";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useCandidate } from "@/features/candidate/CandidateContext";
-import { Screen } from "@/components/Screen";
+import { CandidateStepper } from "@/features/candidate/components/CandidateStepper";
 import { colors } from "@/theme/tokens";
 
 export default function CandidateDashboardScreen() {
+  const router = useRouter();
   const { email } = useAuth();
   const { application, error, isLoading } = useCandidate();
 
@@ -14,29 +16,29 @@ export default function CandidateDashboardScreen() {
     <Screen scrollable>
       <View style={styles.header}>
         <Text style={styles.eyebrow}>Candidat</Text>
-        <Text style={styles.title}>Mon dossier d’adhésion</Text>
+        <Text style={styles.title}>Mon dossier d'adhesion</Text>
         <Text style={styles.body}>
           {email ? `Compte ${email}. ` : ""}
           {application
             ? `Saison ${application.seasonLabel}, statut actuel : ${application.status}.`
-            : "Complétez chaque étape pour soumettre votre dossier au bureau."}
+            : "Completez chaque etape pour soumettre votre dossier au bureau."}
         </Text>
       </View>
       {isLoading ? <Text style={styles.meta}>Chargement du dossier...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {application ? <CandidateStepper application={application} /> : null}
       <View style={styles.actions}>
-        <Link href="/(candidate)/application-status" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Voir le récapitulatif du dossier</Text>
-          </Pressable>
-        </Link>
+        <Button
+          label="Voir le recapitulatif du dossier"
+          onPress={() => router.push("/(candidate)/application-status")}
+          variant="secondary"
+        />
         {application?.status === "pending_review" ? (
-          <Link href="/(candidate)/pending" asChild>
-            <Pressable style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>Suivre la validation du bureau</Text>
-            </Pressable>
-          </Link>
+          <Button
+            label="Suivre la validation du bureau"
+            onPress={() => router.push("/(candidate)/pending")}
+            variant="secondary"
+          />
         ) : null}
       </View>
     </Screen>
@@ -66,20 +68,6 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 12
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
   },
   meta: {
     color: colors.textMuted,

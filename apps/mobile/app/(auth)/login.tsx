@@ -1,6 +1,6 @@
-import { Link, type Href } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { AppTextInput } from "@/components/ui/AppTextInput";
 import { Button } from "@/components/ui/Button";
@@ -8,6 +8,7 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
 export default function LoginScreen() {
+  const router = useRouter();
   const { isLoading, isSupabaseEnabled, signIn, signInAs } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,9 +53,12 @@ export default function LoginScreen() {
               setErrorMessage(result.error);
             }}
           />
-          <Link href={"/(auth)/reset-password" as Href} style={styles.resetLink}>
-            Mot de passe oublié ?
-          </Link>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push("/(auth)/reset-password")}
+          >
+            <Text style={styles.resetLink}>Mot de passe oublie ?</Text>
+          </Pressable>
         </>
       ) : null}
       {!isSupabaseEnabled ? (

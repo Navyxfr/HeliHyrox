@@ -1,42 +1,43 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
 import { colors } from "@/theme/tokens";
 
 export default function RulesViewScreen() {
+  const router = useRouter();
+
   return (
     <Screen scrollable>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Règlement intérieur</Text>
-        <Text style={styles.title}>Conditions d’adhésion</Text>
+        <Text style={styles.eyebrow}>Reglement interieur</Text>
+        <Text style={styles.title}>Conditions d'adhesion</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Présence et réservation</Text>
+          <Text style={styles.sectionTitle}>Presence et reservation</Text>
           <Text style={styles.sectionText}>
-            Les réservations sont personnelles. Toute annulation doit respecter
-            la fenêtre prévue par la section. Les absences répétées peuvent
-            entraîner une suspension.
+            Les reservations sont personnelles. Toute annulation doit respecter la fenetre prevue
+            par la section. Les absences repetees peuvent entrainer une suspension.
           </Text>
         </View>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Certificat médical</Text>
+          <Text style={styles.sectionTitle}>Certificat medical</Text>
           <Text style={styles.sectionText}>
-            Un certificat médical valide est requis pour chaque saison. Le
-            bureau peut demander un nouveau dépôt si le document est illisible.
+            Un certificat medical valide est requis pour chaque saison. Le bureau peut demander un
+            nouveau depot si le document est illisible.
           </Text>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Paiement et validation</Text>
           <Text style={styles.sectionText}>
-            L’adhésion n’est activée qu’après vérification du dossier complet et
-            de la preuve de paiement par le bureau.
+            L'adhesion n'est activee qu'apres verification du dossier complet et de la preuve de
+            paiement par le bureau.
           </Text>
         </View>
       </View>
-      <Link href="/(candidate)/rules-acceptance" asChild>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Continuer vers l’acceptation</Text>
-        </Pressable>
-      </Link>
+      <Button
+        label="Continuer vers l'acceptation"
+        onPress={() => router.push("/(candidate)/rules-acceptance")}
+      />
     </Screen>
   );
 }
@@ -74,17 +75,5 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 14,
     lineHeight: 21
-  },
-  button: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
-    textAlign: "center"
   }
 });

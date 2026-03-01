@@ -1,37 +1,39 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
+import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/AuthContext";
 import { colors } from "@/theme/tokens";
 
 export default function PendingDashboardScreen() {
+  const router = useRouter();
   const { email } = useAuth();
 
   return (
     <Screen scrollable>
       <View style={styles.card}>
         <Text style={styles.eyebrow}>Validation bureau</Text>
-        <Text style={styles.title}>Dossier envoyé</Text>
+        <Text style={styles.title}>Dossier envoye</Text>
         <Text style={styles.body}>
           Votre dossier est en attente de validation par le bureau HeliHyrox.
           {email ? ` Le compte suivi est ${email}.` : ""}
         </Text>
         <View style={styles.checklist}>
-          <Text style={styles.checkItem}>• Vérification du certificat médical</Text>
-          <Text style={styles.checkItem}>• Vérification de la preuve de paiement</Text>
-          <Text style={styles.checkItem}>• Activation du statut membre</Text>
+          <Text style={styles.checkItem}>- Verification du certificat medical</Text>
+          <Text style={styles.checkItem}>- Verification de la preuve de paiement</Text>
+          <Text style={styles.checkItem}>- Activation du statut membre</Text>
         </View>
       </View>
-      <Link href="/(candidate)/application-status" asChild>
-        <Pressable style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>Voir le statut détaillé</Text>
-        </Pressable>
-      </Link>
-      <Link href="/(candidate)/correction-request" asChild>
-        <Pressable style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>Voir une demande de correction</Text>
-        </Pressable>
-      </Link>
+      <Button
+        label="Voir le statut detaille"
+        onPress={() => router.push("/(candidate)/application-status")}
+        variant="secondary"
+      />
+      <Button
+        label="Voir une demande de correction"
+        onPress={() => router.push("/(candidate)/correction-request")}
+        variant="secondary"
+      />
     </Screen>
   );
 }
@@ -72,19 +74,5 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 14,
     lineHeight: 20
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingHorizontal: 18,
-    paddingVertical: 16
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center"
   }
 });
