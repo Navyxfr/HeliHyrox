@@ -17,14 +17,15 @@ export default function LoginScreen() {
   return (
     <Screen scrollable>
       <View style={styles.header}>
-        <Text style={styles.eyebrow}>Auth</Text>
+        <Text style={styles.eyebrow}>Authentification</Text>
         <Text style={styles.title}>Connexion</Text>
         <Text style={styles.body}>
           {isSupabaseEnabled
-            ? "Connectez-vous avec votre compte existant."
+            ? "Identifiez-vous avec votre compte HeliHyrox."
             : "Fallback mock actif. Les boutons ci-dessous simulent les statuts pour valider la navigation."}
         </Text>
       </View>
+
       {isSupabaseEnabled ? (
         <>
           <AppTextInput
@@ -33,7 +34,7 @@ export default function LoginScreen() {
             keyboardType="email-address"
             label="Email"
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder="nom@airbus.com"
             value={email}
           />
           <AppTextInput
@@ -61,9 +62,9 @@ export default function LoginScreen() {
             <Text style={styles.resetLink}>Mot de passe oublie ?</Text>
           </Pressable>
         </>
-      ) : null}
-      {!isSupabaseEnabled ? (
-        <>
+      ) : (
+        <View style={styles.demoBlock}>
+          <Text style={styles.demoTitle}>Simulation rapide</Text>
           <Button label="Simuler candidat" onPress={() => void signInAs("candidate")} />
           <Button
             label="Simuler pending"
@@ -85,8 +86,8 @@ export default function LoginScreen() {
             onPress={() => void signInAs("suspended")}
             variant="secondary"
           />
-        </>
-      ) : null}
+        </View>
+      )}
     </Screen>
   );
 }
@@ -97,28 +98,41 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
     color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    fontSize: 34,
+    fontWeight: "900"
   },
   body: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   },
   error: {
     color: colors.danger,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600"
   },
   resetLink: {
     color: colors.primary,
-    fontWeight: "600"
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 0.5
+  },
+  demoBlock: {
+    gap: 10,
+    marginTop: 8
+  },
+  demoTitle: {
+    color: colors.textDim,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+    textTransform: "uppercase"
   }
 });

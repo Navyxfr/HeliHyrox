@@ -32,41 +32,42 @@ export function EmptyState({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 24,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 8,
     padding: 20
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
-    color: colors.primary,
-    fontSize: 24,
+    color: colors.text,
+    fontSize: 22,
     fontWeight: "800"
   },
   description: {
     color: colors.text,
-    fontSize: 15,
-    lineHeight: 22
+    fontSize: 14,
+    lineHeight: 21
   },
   button: {
     alignSelf: "flex-start",
     backgroundColor: colors.accent,
-    borderRadius: 14,
+    borderRadius: 12,
     marginTop: 8,
     paddingHorizontal: 16,
     paddingVertical: 12
   },
   buttonText: {
-    color: colors.primary,
-    fontSize: 14,
-    fontWeight: "700"
+    color: colors.background,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.5
   }
 });

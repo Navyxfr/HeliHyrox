@@ -18,13 +18,13 @@ export default function MemberHomeScreen() {
         <Text style={styles.eyebrow}>Espace membre</Text>
         <Text style={styles.title}>Bienvenue sur HeliHyrox</Text>
         <Text style={styles.body}>
-          Retrouvez votre prochaine séance, le suivi administratif de la saison
-          et les dernières actualités du bureau.
+          Retrouvez votre prochaine seance, le suivi administratif de la saison et les
+          dernieres actualites du bureau.
         </Text>
       </View>
       {nextSession ? (
         <View style={styles.cardPrimary}>
-          <Text style={styles.cardEyebrow}>Prochaine séance</Text>
+          <Text style={styles.cardEyebrow}>Prochaine seance</Text>
           <Text style={styles.cardTitle}>{nextSession.title}</Text>
           <Text style={styles.cardText}>
             {nextSession.dateLabel} • {nextSession.startsAtLabel} - {nextSession.endsAtLabel}
@@ -36,8 +36,8 @@ export default function MemberHomeScreen() {
       ) : (
         <EmptyState
           eyebrow="Planning"
-          title="Aucune séance à venir"
-          description="Aucun créneau n’est encore disponible pour votre profil. Revenez bientôt."
+          title="Aucune seance a venir"
+          description="Aucun creneau n'est encore disponible pour votre profil. Revenez bientot."
         />
       )}
       <View style={styles.card}>
@@ -52,14 +52,14 @@ export default function MemberHomeScreen() {
       </View>
       {latestNews ? (
         <View style={styles.card}>
-          <Text style={styles.cardEyebrowMuted}>Dernière actualité</Text>
+          <Text style={styles.cardEyebrowMuted}>Derniere actualite</Text>
           <Text style={styles.cardTitleDark}>{latestNews.title}</Text>
           <Text style={styles.cardTextDark}>{latestNews.summary}</Text>
         </View>
       ) : null}
       <Link href="/(member)/my-bookings" asChild>
         <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Voir mes réservations</Text>
+          <Text style={styles.buttonText}>Voir mes reservations</Text>
         </Pressable>
       </Link>
     </Screen>
@@ -72,79 +72,83 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.8,
     textTransform: "uppercase"
   },
   title: {
-    color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    color: colors.text,
+    fontSize: 34,
+    fontWeight: "900",
+    letterSpacing: -1.2
   },
   body: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   },
   cardPrimary: {
-    backgroundColor: colors.primary,
-    borderRadius: 20,
+    backgroundColor: colors.surfaceElevated,
+    borderColor: colors.border,
+    borderRadius: 18,
+    borderWidth: 1,
     gap: 6,
     padding: 18
   },
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 6,
     padding: 18
   },
   cardEyebrow: {
     color: colors.accent,
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 1,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   cardEyebrowMuted: {
     color: colors.textMuted,
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 1,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   cardTitle: {
-    color: colors.surface,
-    fontSize: 20,
+    color: colors.text,
+    fontSize: 22,
     fontWeight: "800"
   },
   cardTitleDark: {
-    color: colors.primary,
-    fontSize: 20,
+    color: colors.text,
+    fontSize: 22,
     fontWeight: "800"
   },
   cardText: {
-    color: colors.surface,
-    fontSize: 14,
+    color: colors.textMuted,
+    fontSize: 13,
     lineHeight: 20
   },
   cardTextDark: {
-    color: colors.text,
-    fontSize: 14,
+    color: colors.textMuted,
+    fontSize: 13,
     lineHeight: 20
   },
   button: {
     backgroundColor: colors.accent,
-    borderRadius: 16,
+    borderRadius: 14,
     paddingHorizontal: 18,
-    paddingVertical: 16
+    paddingVertical: 15
   },
   buttonText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
+    color: colors.background,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.6,
     textAlign: "center"
   }
 });

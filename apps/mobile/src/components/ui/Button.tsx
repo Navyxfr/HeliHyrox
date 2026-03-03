@@ -6,7 +6,7 @@ type ButtonProps = {
   onPress?: () => void | Promise<void>;
   disabled?: boolean;
   isLoading?: boolean;
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "success" | "warning";
 };
 
 export function Button({
@@ -19,6 +19,8 @@ export function Button({
   const isSecondary = variant === "secondary";
   const isDanger = variant === "danger";
   const isGhost = variant === "ghost";
+  const isSuccess = variant === "success";
+  const isWarning = variant === "warning";
   const isDisabled = disabled || isLoading;
 
   return (
@@ -32,6 +34,10 @@ export function Button({
           ? styles.secondary
           : isDanger
             ? styles.danger
+            : isSuccess
+              ? styles.success
+              : isWarning
+                ? styles.warning
             : isGhost
               ? styles.ghost
               : styles.primary,
@@ -39,13 +45,19 @@ export function Button({
       ]}
     >
       <View style={styles.content}>
-        {isLoading ? <ActivityIndicator color={isDanger ? colors.surface : colors.primary} /> : null}
+        {isLoading ? (
+          <ActivityIndicator
+            color={isDanger || isSuccess || isWarning ? colors.background : colors.background}
+          />
+        ) : null}
         <Text
           style={
             isSecondary || isGhost
               ? styles.secondaryText
               : isDanger
                 ? styles.dangerText
+                : isSuccess || isWarning
+                  ? styles.invertedText
                 : styles.primaryText
           }
         >
@@ -58,9 +70,9 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 16,
+    borderRadius: 14,
     paddingHorizontal: 18,
-    paddingVertical: 16
+    paddingVertical: 15
   },
   content: {
     alignItems: "center",
@@ -72,12 +84,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent
   },
   secondary: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceSoft,
     borderColor: colors.border,
     borderWidth: 1
   },
   danger: {
-    backgroundColor: colors.danger
+    backgroundColor: colors.dangerLight,
+    borderColor: colors.danger,
+    borderWidth: 1
+  },
+  success: {
+    backgroundColor: colors.successLight,
+    borderColor: colors.success,
+    borderWidth: 1
+  },
+  warning: {
+    backgroundColor: colors.warningLight,
+    borderColor: colors.warning,
+    borderWidth: 1
   },
   ghost: {
     backgroundColor: "transparent"
@@ -86,21 +110,31 @@ const styles = StyleSheet.create({
     opacity: 0.6
   },
   primaryText: {
-    color: colors.primary,
-    fontSize: 16,
-    fontWeight: "700",
+    color: colors.background,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.6,
     textAlign: "center"
   },
   secondaryText: {
-    color: colors.primary,
-    fontSize: 15,
-    fontWeight: "600",
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 0.4,
     textAlign: "center"
   },
   dangerText: {
-    color: colors.surface,
-    fontSize: 16,
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    textAlign: "center"
+  },
+  invertedText: {
+    color: colors.background,
+    fontSize: 13,
     fontWeight: "700",
+    letterSpacing: 0.5,
     textAlign: "center"
   }
 });

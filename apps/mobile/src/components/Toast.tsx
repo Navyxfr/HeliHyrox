@@ -87,23 +87,28 @@ const styles = StyleSheet.create({
     right: 20
   },
   toast: {
-    borderRadius: 16,
+    borderRadius: 14,
     paddingHorizontal: 16,
-    paddingVertical: 14
+    paddingVertical: 14,
+    borderWidth: 1
   },
   toastSuccess: {
-    backgroundColor: colors.success
+    backgroundColor: colors.success,
+    borderColor: colors.success
   },
   toastError: {
-    backgroundColor: colors.danger
+    backgroundColor: colors.danger,
+    borderColor: colors.danger
   },
   toastInfo: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.accent,
+    borderColor: colors.accent
   },
   toastText: {
-    color: colors.surface,
-    fontSize: 14,
-    fontWeight: "700",
+    color: colors.background,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.5,
     textAlign: "center"
   }
 });

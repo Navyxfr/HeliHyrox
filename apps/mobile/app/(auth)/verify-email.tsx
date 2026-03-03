@@ -40,33 +40,33 @@ export default function VerifyEmailScreen() {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 24,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 10,
     padding: 20
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
     color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    fontSize: 30,
+    fontWeight: "900"
   },
   body: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   },
   hint: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 20
   }
 });

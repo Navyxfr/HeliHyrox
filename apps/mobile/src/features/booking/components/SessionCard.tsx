@@ -20,6 +20,7 @@ export function SessionCard({
     <View style={styles.card}>
       <View style={styles.header}>
         <View style={styles.copy}>
+          <Text style={styles.kicker}>{session.sessionType}</Text>
           <Text style={styles.title}>{session.title}</Text>
           <Text style={styles.meta}>
             {session.dateLabel} • {session.startsAtLabel} - {session.endsAtLabel}
@@ -28,8 +29,8 @@ export function SessionCard({
             {session.location} • Coach {session.coachName}
           </Text>
         </View>
-        <View style={[styles.badge, isFull ? styles.badgeFull : undefined]}>
-          <Text style={[styles.badgeText, isFull ? styles.badgeTextFull : undefined]}>
+        <View style={[styles.badge, isFull ? styles.badgeFull : null]}>
+          <Text style={[styles.badgeText, isFull ? styles.badgeTextFull : null]}>
             {session.bookedCount}/{session.capacity}
           </Text>
         </View>
@@ -45,9 +46,9 @@ export function SessionCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 14,
     padding: 18
@@ -61,20 +62,29 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 4
   },
-  title: {
+  kicker: {
     color: colors.primary,
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 1.6,
+    textTransform: "uppercase"
+  },
+  title: {
+    color: colors.text,
     fontSize: 17,
-    fontWeight: "700"
+    fontWeight: "800"
   },
   meta: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 18
   },
   badge: {
     alignItems: "center",
     backgroundColor: colors.successLight,
+    borderColor: colors.success,
     borderRadius: 999,
+    borderWidth: 1,
     height: 34,
     justifyContent: "center",
     minWidth: 62,
@@ -82,25 +92,29 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: colors.success,
-    fontSize: 12,
-    fontWeight: "700"
+    fontSize: 11,
+    fontWeight: "800"
   },
   badgeFull: {
-    backgroundColor: colors.warningLight
+    backgroundColor: colors.warningLight,
+    borderColor: colors.warning
   },
   badgeTextFull: {
     color: colors.warning
   },
   button: {
-    backgroundColor: colors.accent,
-    borderRadius: 14,
+    backgroundColor: colors.surfaceSoft,
+    borderColor: colors.border,
+    borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: 16,
-    paddingVertical: 14
+    paddingVertical: 13
   },
   buttonText: {
-    color: colors.primary,
-    fontSize: 14,
-    fontWeight: "700",
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: "800",
+    letterSpacing: 0.4,
     textAlign: "center"
   }
 });

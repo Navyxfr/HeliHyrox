@@ -17,8 +17,8 @@ export default function RegisterScreen() {
   return (
     <Screen scrollable>
       <View style={styles.header}>
-        <Text style={styles.eyebrow}>Auth</Text>
-        <Text style={styles.title}>Creer un compte</Text>
+        <Text style={styles.eyebrow}>Nouveau compte</Text>
+        <Text style={styles.title}>Inscription</Text>
         <Text style={styles.body}>
           {isSupabaseEnabled
             ? "Creation de compte publique prete a etre branchee sur Supabase Auth."
@@ -33,7 +33,7 @@ export default function RegisterScreen() {
             keyboardType="email-address"
             label="Email"
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder="nom@airbus.com"
             value={email}
           />
           <AppTextInput
@@ -41,7 +41,7 @@ export default function RegisterScreen() {
             error={errorMessage}
             label="Mot de passe"
             onChangeText={setPassword}
-            placeholder="Mot de passe"
+            placeholder="Minimum 8 caracteres"
             secureTextEntry
             value={password}
           />
@@ -57,13 +57,12 @@ export default function RegisterScreen() {
             }}
           />
         </>
-      ) : null}
-      {!isSupabaseEnabled ? (
+      ) : (
         <Button
           label="Simuler l'inscription"
           onPress={() => router.push("/(auth)/verify-email")}
         />
-      ) : null}
+      )}
     </Screen>
   );
 }
@@ -74,19 +73,19 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
     color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    fontSize: 34,
+    fontWeight: "900"
   },
   body: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   }
 });

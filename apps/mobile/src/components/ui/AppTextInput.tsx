@@ -32,17 +32,19 @@ const styles = StyleSheet.create({
     gap: 8
   },
   label: {
-    color: colors.text,
-    fontSize: 14,
-    fontWeight: "600"
+    color: colors.textDim,
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    textTransform: "uppercase"
   },
   input: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceSoft,
     borderColor: colors.border,
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: 1,
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     paddingHorizontal: 16,
     paddingVertical: 14
   },
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.danger,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600"
   }
 });

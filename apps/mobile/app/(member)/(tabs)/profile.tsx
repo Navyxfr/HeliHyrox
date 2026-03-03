@@ -51,51 +51,53 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   profileCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 24,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 8,
     padding: 20
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
-    color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    color: colors.text,
+    fontSize: 32,
+    fontWeight: "900"
   },
   body: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   },
   summaryCard: {
-    backgroundColor: colors.primary,
-    borderRadius: 20,
+    backgroundColor: colors.surfaceElevated,
+    borderColor: colors.border,
+    borderRadius: 18,
+    borderWidth: 1,
     gap: 6,
     padding: 18
   },
   summaryLabel: {
     color: colors.accent,
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 1,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   summaryValue: {
-    color: colors.surface,
+    color: colors.text,
     fontSize: 20,
     fontWeight: "800"
   },
   summaryMeta: {
-    color: colors.surface,
-    fontSize: 14,
+    color: colors.textMuted,
+    fontSize: 13,
     lineHeight: 20
   },
   links: {

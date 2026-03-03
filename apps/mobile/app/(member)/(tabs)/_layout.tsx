@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { MemberTabBar } from "@/components/MemberTabBar";
 import { useAuth } from "@/features/auth/AuthContext";
-import { colors } from "@/theme/tokens";
 
 export default function MemberTabsLayout() {
   const { roles } = useAuth();
@@ -9,27 +9,16 @@ export default function MemberTabsLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <MemberTabBar {...props} />}
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: {
-          borderTopColor: colors.border,
-          backgroundColor: colors.surface,
-          height: 72,
-          paddingTop: 8,
-          paddingBottom: 10
-        },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "700"
-        }
+        headerShown: false
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Accueil",
+          tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />
         }}
       />
@@ -37,6 +26,7 @@ export default function MemberTabsLayout() {
         name="planning"
         options={{
           title: "Planning",
+          tabBarLabel: "Planning",
           tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" color={color} size={size} />
         }}
       />
@@ -44,6 +34,7 @@ export default function MemberTabsLayout() {
         name="news"
         options={{
           title: "Actus",
+          tabBarLabel: "Actus",
           tabBarIcon: ({ color, size }) => <Ionicons name="newspaper-outline" color={color} size={size} />
         }}
       />
@@ -51,6 +42,7 @@ export default function MemberTabsLayout() {
         name="profile"
         options={{
           title: "Profil",
+          tabBarLabel: "Profil",
           tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} />
         }}
       />
@@ -58,6 +50,7 @@ export default function MemberTabsLayout() {
         name="coach"
         options={{
           title: "Coach",
+          tabBarLabel: "Coach",
           href: isCoach ? "/(member)/(tabs)/coach" : null,
           tabBarIcon: ({ color, size }) => <Ionicons name="people-outline" color={color} size={size} />
         }}

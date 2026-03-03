@@ -24,27 +24,27 @@ export function PlaceholderPanel({
 
 const styles = StyleSheet.create({
   panel: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 24,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 8,
     padding: 20
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1
+    letterSpacing: 1.6
   },
   title: {
-    color: colors.primary,
-    fontSize: 28,
+    color: colors.text,
+    fontSize: 26,
     fontWeight: "800"
   },
   body: {
     color: colors.text,
-    fontSize: 15,
-    lineHeight: 22
+    fontSize: 14,
+    lineHeight: 21
   }
 });

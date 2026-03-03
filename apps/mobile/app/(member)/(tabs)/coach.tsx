@@ -108,7 +108,7 @@ export default function CoachSessionsScreen() {
           title: session.title,
           dateLabel: formatDateLabel(session.starts_at),
           timeLabel: formatTimeLabel(session.starts_at, session.ends_at),
-          location: session.location ?? "Lieu à définir",
+          location: session.location ?? "Lieu a definir",
           bookedCount: Number(session.booked_count),
           capacity: session.capacity,
           attendees: (session.attendees ?? []).map((attendee) => ({
@@ -142,9 +142,9 @@ export default function CoachSessionsScreen() {
     >
       <View style={styles.header}>
         <Text style={styles.eyebrow}>Coach</Text>
-        <Text style={styles.title}>Mes séances assignées</Text>
+        <Text style={styles.title}>Mes seances assignees</Text>
         <Text style={styles.copy}>
-          Retrouvez vos prochains cours et la liste des inscrits en temps réel.
+          Retrouvez vos prochains cours et la liste des inscrits en temps reel.
         </Text>
       </View>
 
@@ -153,15 +153,15 @@ export default function CoachSessionsScreen() {
       {isLoading ? (
         <View style={styles.loadingCard}>
           <ActivityIndicator color={colors.primary} size="small" />
-          <Text style={styles.loadingText}>Chargement des séances coach...</Text>
+          <Text style={styles.loadingText}>Chargement des seances coach...</Text>
         </View>
       ) : null}
 
       {!isLoading && sessions.length === 0 ? (
         <EmptyState
           eyebrow="Coach"
-          title="Aucune séance assignée"
-          description="Les séances qui vous sont attribuées apparaîtront ici avec la liste des inscrits."
+          title="Aucune seance assignee"
+          description="Les seances qui vous sont attribuees apparaitront ici avec la liste des inscrits."
         />
       ) : (
         sessions.map((session) => (
@@ -197,31 +197,31 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1,
+    letterSpacing: 1.6,
     textTransform: "uppercase"
   },
   title: {
-    color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    color: colors.text,
+    fontSize: 32,
+    fontWeight: "900"
   },
   copy: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 22
   },
   error: {
     color: colors.danger,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600"
   },
   loadingCard: {
     alignItems: "center",
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 10,
     padding: 18
@@ -231,21 +231,21 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderColor: colors.border,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
     gap: 8,
     padding: 18
   },
   cardTitle: {
-    color: colors.primary,
+    color: colors.text,
     fontSize: 17,
-    fontWeight: "700"
+    fontWeight: "800"
   },
   cardMeta: {
     color: colors.text,
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 20
   },
   attendees: {
@@ -255,15 +255,15 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   attendeePill: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceSoft,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8
   },
   attendeeText: {
     color: colors.primary,
-    fontSize: 13,
-    fontWeight: "600"
+    fontSize: 12,
+    fontWeight: "700"
   },
   attendeeEmpty: {
     color: colors.textMuted,

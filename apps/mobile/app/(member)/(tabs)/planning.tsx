@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/components/Screen";
 import { SessionCard } from "@/features/booking/components/SessionCard";
 import { useBooking } from "@/features/booking/BookingContext";
@@ -18,13 +18,16 @@ export default function PlanningScreen() {
       }}
       scrollable
     >
-      <Text style={styles.title}>Planning</Text>
-      {isLoading ? <Text style={styles.meta}>Chargement des séances...</Text> : null}
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Training board</Text>
+        <Text style={styles.title}>Planning</Text>
+      </View>
+      {isLoading ? <Text style={styles.meta}>Chargement des seances...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {sessions.map((session) => (
         <SessionCard
           key={session.id}
-          actionLabel={session.isBooked ? "Voir la réservation" : "Voir la séance"}
+          actionLabel={session.isBooked ? "Voir la reservation" : "Voir la seance"}
           href={`/(member)/session/${session.id}`}
           session={session}
         />
@@ -34,18 +37,28 @@ export default function PlanningScreen() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    gap: 6
+  },
+  eyebrow: {
+    color: colors.textMuted,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.6,
+    textTransform: "uppercase"
+  },
   title: {
-    color: colors.primary,
-    fontSize: 28,
-    fontWeight: "800"
+    color: colors.text,
+    fontSize: 32,
+    fontWeight: "900"
   },
   meta: {
     color: colors.textMuted,
-    fontSize: 13
+    fontSize: 12
   },
   error: {
     color: colors.danger,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600"
   }
 });

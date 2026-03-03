@@ -26,6 +26,7 @@ export function Screen({
 }: ScreenProps) {
   return (
     <SafeAreaView style={styles.screen}>
+      <View pointerEvents="none" style={styles.pattern} />
       {scrollable ? (
         <ScrollView
           contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
@@ -48,17 +49,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background
   },
+  pattern: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.background,
+    opacity: 0.5
+  },
   content: {
     backgroundColor: colors.background,
     gap: 16,
     justifyContent: "flex-start",
-    paddingHorizontal: 24,
-    paddingVertical: 32
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    paddingBottom: 28
   },
   scrollContent: {
     flexGrow: 1,
     gap: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 32
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    paddingBottom: 28
   }
 });
